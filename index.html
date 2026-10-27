@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>運勢筆記｜翻開今天</title>
+<style>
+:root{
+  --paper:#fffaf0; --cream:#fff7dc; --ink:#705268; --muted:#9b7e8b;
+  --rose:#e8a6b8; --rose-light:#f9e8ec; --sage:#b7c19a; --sage-light:#eef0df;
+  --gold:#d9bd68; --line:#e8d9c6; --blue:#c6dce3; --shadow:rgba(103,73,83,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:22px}
+#scrollProgress{position:fixed;top:0;left:0;width:0;height:4px;background:linear-gradient(90deg,#dba5b7,#d9bd68,#b9c9a6);z-index:99;transition:width .12s linear}
+.scroll-sparkle{position:fixed;z-index:0;pointer-events:none;color:#d5b9c3;opacity:.62;font-size:18px;transition:transform .15s linear;animation:floaty 5s ease-in-out infinite}
+.sparkle-a{left:3%;top:25%}.sparkle-b{right:4%;top:58%;animation-delay:-2s}.sparkle-c{left:7%;top:78%;animation-delay:-3s}
+@keyframes floaty{0%,100%{translate:0 0;rotate:-8deg}50%{translate:0 -12px;rotate:8deg}}
+body{margin:0;color:var(--ink);background:var(--paper);font-family:"Noto Serif TC","Songti TC","PMingLiU",serif;line-height:1.8;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.42;background-image:linear-gradient(#d9cce0 1px,transparent 1px),linear-gradient(90deg,#d9cce0 1px,transparent 1px);background-size:28px 28px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+button{font:inherit;cursor:pointer;color:inherit}
+a{color:inherit}
+.wrap{width:min(1050px,92%);margin:auto}
+header{padding:24px 0 8px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.82rem;letter-spacing:.12em;color:var(--muted)}
+.brand{font-size:1rem;letter-spacing:.18em}
+.hero{position:relative;text-align:center;padding:56px 20px 50px;margin:12px auto 30px;border:1.5px solid var(--gold);border-radius:48% 48% 22px 22px / 12% 12% 22px 22px;background:rgba(255,250,240,.88);box-shadow:8px 9px 0 #eadbbf;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:12px;border:1px dashed #d7bd70;border-radius:inherit;pointer-events:none}
+.hero .tiny{font-size:.82rem;letter-spacing:.22em;color:#a38b50}
+.hero h1{font-size:clamp(2.6rem,7vw,5rem);line-height:1.15;letter-spacing:.16em;margin:12px 0;color:#75566e;font-weight:700}
+.hero p{margin:12px auto 24px;max-width:560px;color:#967b8b}
+.stamp{display:inline-grid;place-items:center;width:48px;height:48px;border:1px solid #c8b7bc;background:#fff7e8;border-radius:5px;transform:rotate(-8deg);font-size:1.45rem;color:#a06e83;box-shadow:3px 3px 0 #e8d4c9;margin:0 8px}
+.primary{border:1px solid #c68da0;background:#eab2c2;padding:12px 30px;border-radius:7px;box-shadow:0 5px 0 #c98ea3;letter-spacing:.12em;transition:.2s;position:relative}
+.primary:hover{transform:translateY(-3px);box-shadow:0 8px 0 #c98ea3}
+.primary:active{transform:translateY(3px);box-shadow:0 2px 0 #c98ea3}
+.section{padding:28px 0 46px}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.section-head:after{content:"";height:1px;background:var(--line);flex:1}
+.section-head h2{font-size:1.25rem;letter-spacing:.13em;margin:0;font-weight:600}
+.section-head span{font-size:.8rem;color:var(--muted);letter-spacing:.1em}
+.book-area{perspective:1200px;max-width:760px;margin:0 auto}
+.book{position:relative;min-height:230px;border-radius:10px 18px 18px 10px;background:#f4e7cc;border:1px solid #d8c7a6;box-shadow:9px 10px 0 #e7d9c5;padding:12px;transform-origin:left center;transition:transform .85s cubic-bezier(.2,.7,.2,1)}
+.book:before{content:"";position:absolute;left:20px;top:14px;bottom:14px;width:10px;border-right:2px solid #d7c5a9;border-left:1px solid #e6d6bb}
+.book-inner{margin-left:18px;min-height:204px;background:#fffaf0;border:1px dashed #d7bd70;padding:26px 22px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.book-inner h3{margin:0 0 8px;font-size:1.35rem;letter-spacing:.1em}
+.book-inner p{margin:0 0 18px;color:#967b8b}
+.book.open{transform:rotateY(-7deg) rotateX(1deg)}
+.book.open .book-inner{animation:innerPageOpen .72s cubic-bezier(.2,.7,.2,1) both}
+@keyframes innerPageOpen{
+  0%{transform:translateX(0) rotateY(0);opacity:1}
+  45%{transform:translateX(8px) rotateY(-3deg)}
+  100%{transform:translateX(0) rotateY(0);opacity:1}
+}
+.result{display:none;margin:28px auto 0;max-width:900px;perspective:1000px}
+.result.show{display:block}
+.result .omikuji{transform-origin:top center;animation:paperUnfold .95s cubic-bezier(.2,.75,.25,1) both}
+@keyframes paperUnfold{
+  0%{opacity:0;transform:translateY(-18px) rotateX(-72deg) scaleY(.18);filter:blur(2px)}
+  55%{opacity:1;transform:translateY(3px) rotateX(10deg) scaleY(1.03);filter:blur(0)}
+  75%{transform:translateY(-2px) rotateX(-3deg) scaleY(.99)}
+  100%{opacity:1;transform:translateY(0) rotateX(0) rotate(-.35deg) scaleY(1);filter:blur(0)}
+}
+.omikuji{position:relative;padding:38px clamp(18px,5vw,56px);background:#fff8df;border:5px solid #e2c875;border-radius:22px;box-shadow:10px 11px 0 #eadbbf;text-align:center;transform:rotate(-.35deg)}
+.omikuji:before{content:"";position:absolute;inset:10px;border:2px dashed #d9b957;pointer-events:none}
+.omikuji:after{content:"✿";position:absolute;top:20px;left:25px;color:#c6ad5a;font-size:2.2rem}
+.omikuji .kicker{letter-spacing:.22em;font-size:1.1rem;margin:0 0 10px}
+.fortune-level{font-size:clamp(3.6rem,10vw,6rem);line-height:1.25;color:#c96589;margin:5px 0 14px;font-weight:700;letter-spacing:.16em}
+.omikuji .reading{font-size:clamp(1.03rem,2.7vw,1.45rem);font-weight:600;max-width:740px;margin:0 auto 12px}
+.omikuji .date{font-size:.82rem;color:#9b8290;letter-spacing:.12em}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.card{position:relative;background:#fffaf0;border:1px solid #e4d2c9;border-radius:8px;padding:20px 20px 18px;box-shadow:4px 5px 0 var(--shadow);overflow:hidden;transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-4px) rotate(-.3deg);box-shadow:7px 9px 0 var(--shadow)}
+.card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--accent,var(--rose))}
+.card h3{font-size:1rem;letter-spacing:.12em;margin:0 0 8px}
+.card p{margin:6px 0;color:#846b7d}
+.five{display:flex;gap:8px;align-items:center;margin:8px 0}
+.five span{font-size:1.55rem;color:#d8d1c9;transform:scale(.9);transition:color .3s,transform .3s}
+.five span.filled{color:var(--accent,var(--rose));animation:pop .45s both}
+#loveScore span.filled{color:#df7899;text-shadow:0 1px 0 #c85f81;font-size:1.7rem}
+.card.reveal{transition:opacity .7s,transform .7s,box-shadow .25s}
+@keyframes pop{0%{transform:scale(.6)}65%{transform:scale(1.25)}100%{transform:scale(1)}}
+.score-label{font-size:.83rem;color:#a58b99}
+.lucky-color{display:flex;align-items:center;gap:15px}
+.swatch{width:58px;height:58px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 1px #d9c8b9;flex-shrink:0}
+.quote-card{background:#f8e9ed;--accent:#df9cb0}
+.spicy-card{background:#f1eee3;--accent:#9c8b63}
+.note-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.small-btn{border:1px solid #d7bdc4;background:#fffaf0;border-radius:5px;padding:7px 12px;font-size:.86rem;transition:.2s}
+.small-btn:hover{background:#f7e6eb;transform:translateY(-2px)}
+.collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.saved-note{padding:16px;background:#fff8e9;border:1px dashed #d4b9a9;transform:rotate(-.4deg)}
+.saved-note:nth-child(even){transform:rotate(.5deg);background:#f9e9ed}
+.saved-note p{margin:6px 0}
+.saved-note small{color:#9b8290}
+.empty{color:#a48d9a;font-size:.92rem;padding:18px;border:1px dashed var(--line);text-align:center}
+footer{text-align:center;padding:30px 10px 45px;color:#a58d9a;font-size:.82rem;letter-spacing:.08em}
+.floating{position:fixed;right:16px;bottom:16px;border:1px solid #d9c2c6;background:#fffaf0;border-radius:50%;width:44px;height:44px;box-shadow:3px 4px 0 #e8d8d2;z-index:5}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s,transform .7s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:620px){
+ .wrap{width:min(100% - 28px,1050px)}
+ .hero{padding:44px 16px 38px;border-radius:28px}
+ .hero h1{letter-spacing:.08em}
+ .cards,.collection{grid-template-columns:1fr}
+ .book-area{overflow:hidden;padding:0 2px}
+ .book{transform-origin:center center}
+ .book.open{transform:rotateY(-2deg) rotateX(0)}
+ .book-inner{padding:22px 14px;margin-left:12px}
+ .omikuji{padding:34px 18px}
+ .topline{font-size:.72rem;flex-wrap:wrap}
+ .section-head{min-width:0;gap:8px}
+ .section-head h2{font-size:1.08rem;white-space:nowrap}
+ .section-head span{font-size:.72rem;white-space:nowrap}
+ .card{padding:17px}
+ .scroll-sparkle{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+/* Keep filled and empty love-rating hearts exactly the same size. */
+#loveScore, .love-score, [data-score="love"] {
+  font-size: 1em;
+}
+#loveScore .score-icon, .love-score .score-icon, [data-score="love"] .score-icon,
+#loveScore .heart, .love-score .heart, [data-score="love"] .heart {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35em;
+  height: 1.35em;
+  font-size: 1.35em;
+  line-height: 1;
+  flex: 0 0 1.35em;
+}
+
+
+/* 愛情運：實心與灰色空心愛心使用相同尺寸與對齊方式 */
+#loveScore span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.7rem;
+  height: 1.9rem;
+  flex: 0 0 1.7rem;
+  font-size: 1.7rem;
+  line-height: 1;
+  box-sizing: border-box;
+  text-shadow: none;
+}
+#loveScore span.filled {
+  font-size: 1.7rem;
+}
+
+
+/* ===== 新增：手帳收藏、心情任務、月曆與御神籤稀有特效 ===== */
+.feature-panel{background:rgba(255,250,240,.94);border:1px solid #e4d3c4;border-radius:14px;padding:20px;box-shadow:5px 6px 0 rgba(103,73,83,.08);position:relative;overflow:hidden}
+.feature-panel:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--panel-accent,#d9bd68)}
+.feature-panel h3{margin:0 0 10px;font-size:1.05rem;letter-spacing:.1em}
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.mood-options,.task-options,.badge-list{display:flex;flex-wrap:wrap;gap:8px}
+.mood-btn{border:1px solid #e5d2d2;background:#fffaf0;border-radius:999px;padding:7px 12px;font-size:.9rem;transition:.2s}
+.mood-btn[aria-pressed="true"]{background:#f5dce4;border-color:#cf91a6;box-shadow:0 2px 0 #dfb3bf;transform:translateY(-2px)}
+.task-item{display:flex;align-items:flex-start;gap:9px;border:1px dashed #dfcbbf;background:#fffdf7;border-radius:8px;padding:10px;margin:8px 0}
+.task-item input{accent-color:#c77995;margin-top:7px;width:17px;height:17px}
+.task-item.done span{text-decoration:line-through;color:#9d8b92}
+.feature-note{font-size:.84rem;color:#9b7e8b;margin:9px 0 0}
+.calendar-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.calendar-head button{border:1px solid #dfc9c7;background:#fff8ee;border-radius:6px;padding:5px 10px}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calendar-weekday,.calendar-day{min-width:0;text-align:center;padding:7px 2px;font-size:.85rem}
+.calendar-weekday{color:#a38b96;font-size:.75rem}
+.calendar-day{border:1px solid #eee0d4;background:#fffdf7;border-radius:6px;min-height:39px;position:relative}
+.calendar-day.has-draw:after{content:"✿";display:block;color:#c77995;font-size:.72rem;line-height:1}
+.calendar-day.today{outline:2px solid #d9bd68;outline-offset:1px}
+.calendar-day.empty-day{visibility:hidden}
+.badge-chip{display:flex;align-items:center;gap:8px;border:1px solid #e2d2c5;background:#fffdf6;border-radius:9px;padding:9px 11px;min-width:140px;flex:1}
+.badge-chip .badge-icon{font-size:1.45rem;filter:grayscale(1);opacity:.4}
+.badge-chip.unlocked{background:#fff4d8;border-color:#d9bd68}
+.badge-chip.unlocked .badge-icon{filter:none;opacity:1;animation:badgePop .55s both}
+.badge-chip strong{display:block;font-size:.86rem}
+.badge-chip small{display:block;color:#9b8290;font-size:.75rem}
+@keyframes badgePop{0%{transform:scale(.5) rotate(-20deg)}70%{transform:scale(1.2) rotate(7deg)}100%{transform:scale(1) rotate(0)}}
+.rarity-tag{display:inline-flex;align-items:center;gap:6px;border:1px solid currentColor;border-radius:999px;padding:3px 11px;font-size:.8rem;letter-spacing:.1em;margin-bottom:8px;background:rgba(255,255,255,.55)}
+.omikuji.rarity-common{border-color:#e2c875}
+.omikuji.rarity-uncommon{border-color:#c6b6d8;box-shadow:10px 11px 0 #e3d8eb,0 0 0 3px #f3eaf8}
+.omikuji.rarity-rare{border-color:#d6a94f;box-shadow:10px 11px 0 #eadbbf,0 0 22px rgba(217,189,104,.35)}
+.omikuji.rarity-secret{border-color:#c87999;box-shadow:10px 11px 0 #eadbbf,0 0 28px rgba(200,121,153,.4)}
+.omikuji.rarity-rare:after,.omikuji.rarity-secret:after{content:"✧";animation:rareTwinkle 1.8s ease-in-out infinite}
+@keyframes rareTwinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.25) rotate(18deg);color:#e2ad50}}
+.season-card{display:flex;align-items:center;gap:14px;background:#f7eee3;border:1px dashed #d8c4ad;border-radius:10px;padding:14px}
+.season-icon{font-size:2rem;flex-shrink:0}
+.secret-message{display:none;margin-top:12px;padding:16px;border:1px dashed #c78da0;border-radius:10px;background:#fff0f4;animation:paperIn .6s both}
+.secret-message.show{display:block}
+.secret-stamp{cursor:pointer;user-select:none}
+.secret-stamp:focus-visible{outline:2px solid #c77995;outline-offset:4px}
+.audio-toggle{display:inline-flex;align-items:center;gap:7px}
+.feature-button{border:1px solid #d7bdc4;background:#fffaf0;border-radius:6px;padding:8px 12px;font-size:.86rem}
+.feature-button:hover{background:#f7e6eb}
+.history-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.history-entry{border:1px dashed #d9c8b9;background:#fffdf7;border-radius:8px;padding:12px}
+.history-entry strong{display:block}
+.history-entry small{color:#9b8290}
+@media(max-width:620px){.feature-grid,.history-list{grid-template-columns:1fr}.feature-panel{padding:16px}.calendar-day{min-height:34px;padding:5px 1px}.badge-chip{min-width:100%;}}
+
+
+/* 幸運色卡：跟隨抽中的顏色變化，但將色彩降飽和，維持莫蘭迪手帳氛圍 */
+#colorCard{--lucky-muted:#d8c5c8;transition:--lucky-muted .7s ease}
+#colorCard:before{background:var(--lucky-muted);transition:background-color .7s ease}
+#colorCard .swatch{background:var(--lucky-muted);transition:background-color .7s ease,box-shadow .7s ease}
+#colorCard .swatch:before{background:var(--lucky-muted);transition:background-color .7s ease}
+#colorCard .lucky-color{border-left:0;padding-left:0}
+#colorCard .lucky-color strong{color:var(--ink);transition:color .7s ease}
+
+</style>
+</head>
+<body>
+<div id="scrollProgress" aria-hidden="true"></div><span class="scroll-sparkle sparkle-a" aria-hidden="true">✿</span><span class="scroll-sparkle sparkle-b" aria-hidden="true">✧</span><span class="scroll-sparkle sparkle-c" aria-hidden="true">♡</span>
+<header class="wrap">
+  <div class="topline"><span class="brand">✿ 運 勢 筆 記</span><span id="todayDate"></span></div>
+</header>
+<main class="wrap">
+  <section class="hero reveal">
+    <div class="tiny">A LITTLE NOTE FOR TODAY</div>
+    <h1>運勢筆記</h1>
+    <p>把日子翻開一頁。願你帶著一點勇氣，去過自己的今天。</p>
+    <div aria-hidden="true" style="margin:20px 0 25px"><span class="stamp secret-stamp" id="secretStamp" role="button" tabindex="0" aria-label="神秘小花">✿</span><span class="stamp" style="transform:rotate(5deg)">☘</span><span class="stamp" style="transform:rotate(-3deg)">♡</span></div>
+    <button class="primary" id="jumpButton">翻開今天　↗</button>
+  </section>
+
+  <section class="section reveal" id="drawSection">
+    <div class="section-head"><h2>翻開今天</h2><span>今日一籤</span></div>
+    <div class="book-area">
+      <div class="book" id="book">
+        <div class="book-inner">
+          <h3 id="bookTitle">今天的頁面，還沒翻開。</h3>
+          <p id="bookText">深呼吸，讓今天從一個小小的儀式開始。</p>
+          <button class="primary" id="drawButton">打開籤紙 ✧</button>
+        </div>
+      </div>
+    </div>
+    <div class="result" id="result" tabindex="-1" aria-live="polite">
+      <div class="omikuji">
+        <p class="kicker">✿　今日御神籤　✿</p>
+        <div class="fortune-level" id="fortuneLevel">小吉</div>
+        <p class="reading" id="fortuneReading"></p>
+        <div class="date" id="fortuneDate"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="report">
+    <div class="section-head"><h2>今日運勢</h2><span>慢慢來，也算前進</span></div>
+    <div class="cards">
+      <article class="card" style="--accent:#c9b25e"><h3>✿ 整體運勢</h3><div class="five" id="overallScore" aria-label="整體運勢"></div><div class="score-label" id="overallLabel"></div></article>
+      <article class="card" style="--accent:#d9a7b6"><h3>♡ 愛情運</h3><div class="five" id="loveScore" aria-label="愛情運"></div><div class="score-label" id="loveLabel"></div></article>
+      <article class="card" style="--accent:#b5a2bd"><h3>＄ 財運</h3><div class="five" id="moneyScore" aria-label="財運"></div><div class="score-label" id="moneyLabel"></div></article>
+      <article class="card" style="--accent:#a9bd9a"><h3>▤ 課業・工作</h3><div class="five" id="workScore" aria-label="課業工作"></div><div class="score-label" id="workLabel"></div></article>
+      <article class="card" id="colorCard" style="--accent:#e9c4ce;grid-column:1/-1"><h3>今日幸運顏色</h3><div class="lucky-color"><div class="swatch" id="colorSwatch"></div><div><strong id="colorName">櫻花粉</strong><p id="colorAdvice">把溫柔留一點給自己。</p></div></div></article>
+      <article class="card"><h3>幸運數字</h3><p style="font-size:2.2rem;margin:0;color:#c96589" id="luckyNumber">7</p><p>不是答案，只是今天的小小暗號。</p></article>
+      <article class="card quote-card"><h3>✉ 留給自己的話</h3><p id="quoteText"></p><small id="quoteSource"></small><div class="note-actions"><button class="small-btn" id="saveQuote">♡ 收藏這句</button></div></article>
+      <article class="card spicy-card"><h3>✎ 說句實在話</h3><p id="spicyText"></p></article>
+    </div>
+  </section>
+
+
+  <section class="section reveal" id="dailyRitual">
+    <div class="section-head"><h2>今日的小小儀式</h2><span>先照顧心情，再開始今天</span></div>
+    <div class="feature-grid">
+      <article class="feature-panel" style="--panel-accent:#d9a7b6">
+        <h3>今天的心情印章</h3>
+        <div class="mood-options" id="moodOptions">
+          <button class="mood-btn" data-mood="期待" aria-pressed="false">😎 期待</button>
+          <button class="mood-btn" data-mood="平靜" aria-pressed="false">🙂 平靜</button>
+          <button class="mood-btn" data-mood="疲憊" aria-pressed="false">🫩 疲憊</button>
+          <button class="mood-btn" data-mood="焦慮" aria-pressed="false">😱 焦慮</button>
+          <button class="mood-btn" data-mood="沒電了" aria-pressed="false">🥱 沒電了</button>
+          <button class="mood-btn" data-mood="有幹勁" aria-pressed="false">😁 有幹勁</button>
+        </div>
+        <p class="feature-note" id="moodStatus">選一枚最接近此刻的心情印章，會記錄在今天的手帳裡。</p>
+      </article>
+      <article class="feature-panel" style="--panel-accent:#b7c19a">
+        <h3>今日小任務</h3>
+        <div id="taskList"></div>
+        <p class="feature-note" id="taskStatus">不用一次完成全部，完成一件也算今天的進度。</p>
+      </article>
+    </div>
+    <div class="season-card" style="margin-top:14px" id="seasonCard">
+      <span class="season-icon" id="seasonIcon">🍁</span>
+      <div><strong id="seasonTitle">季節限定小箋</strong><p id="seasonText" style="margin:3px 0 0">願你在自己的季節裡慢慢長大。</p></div>
+    </div>
+    <div class="secret-message" id="secretMessage">
+      <strong>✧ 你找到藏起來的小花了！</strong>
+      <p style="margin:6px 0">今天的隱藏小箋：不需要把每一天都過得很精彩。能好好走過，就是很了不起的事。</p>
+      <p style="margin:0">再來看看季節限定的小小祝福吧。🌸</p>
+    </div>
+  </section>
+
+  <section class="section reveal" id="fortuneArchive">
+    <div class="section-head"><h2>御神籤收藏冊</h2><span>每一頁都是曾經的今天</span></div>
+    <div class="feature-panel" style="--panel-accent:#d9bd68">
+      <div class="calendar-head">
+        <button id="monthPrev" aria-label="上個月">←</button>
+        <strong id="calendarTitle">本月籤紙</strong>
+        <button id="monthNext" aria-label="下個月">→</button>
+      </div>
+      <div class="calendar-grid" id="fortuneCalendar"></div>
+      <p class="feature-note" id="calendarHint">有抽過籤的日期會出現小花。點選日期可以回顧那天的御神籤。</p>
+      <div id="selectedFortune" class="history-entry" style="margin-top:12px;display:none"></div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="section-head"><h3 style="margin:0;font-size:1.05rem">收藏徽章</h3><span>小小累積，也值得紀念</span></div>
+      <div class="badge-list" id="badgeList"></div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="section-head"><h3 style="margin:0;font-size:1.05rem">籤紙回憶</h3><span>把走過的日子收進冊子</span></div>
+      <div class="history-list" id="fortuneHistory"></div>
+    </div>
+  </section>
+
+  <section class="section reveal" id="ritualSettings">
+    <div class="section-head"><h2>開封的小儀式</h2><span>聲音與震動都可以自己決定</span></div>
+    <div class="feature-panel" style="--panel-accent:#c6b6d8">
+      <label class="audio-toggle"><input type="checkbox" id="soundToggle" checked> 開封音效</label>
+      <label class="audio-toggle" style="margin-left:16px"><input type="checkbox" id="vibrationToggle" checked> 手機震動（裝置支援時）</label>
+      <p class="feature-note">音效只會在你按下按鈕後播放，不會自動出聲。若裝置或瀏覽器不支援震動，網頁會自動略過。</p>
+    </div>
+  </section>
+
+  <section class="section reveal" id="collection">
+    <div class="section-head"><h2>收藏的句子</h2><span>留一點字，陪自己走一段</span></div>
+    <div class="collection" id="savedQuotes"><div class="empty">你收藏的句子會安靜地待在這裡。</div></div>
+  </section>
+</main>
+<footer>把今天好好過完，就是一件值得記下來的事。 ✿</footer>
+<button class="floating" id="topButton" aria-label="回到頂部">↑</button>
+<script>
+const $=id=>document.getElementById(id);
+const dateKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const dateLabel=()=>new Intl.DateTimeFormat('zh-TW',{year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(new Date());
+$('todayDate').textContent=dateLabel();
+const fortunes=[
+ ['大吉','今天適合把心裡想做的事往前推一點。機會不一定敲門，有時要自己伸手。'],
+ ['吉','不必每一步都漂亮，只要方向沒有弄丟，就繼續走。'],
+ ['中吉','今天的好運藏在細節裡。多確認一次，少一點事後懊惱。'],
+ ['小吉','小小的進展也值得被記下。別因為還沒抵達，就否定正在前進的自己。'],
+ ['末吉','慢一點不是落後，是替自己留出看清路的時間。'],
+ ['凶','今天先求穩，不求贏。暫停不是認輸，逞強才可能讓小事變大。']
+];
+const colors=[["櫻花粉","#e8c3cc","把溫柔留一點給自己。"],["奶油黃","#e8dca8","讓心裡亮一盞小燈。"],["霧霾藍","#b9cbd4","先整理思緒，再整理世界。"],["鼠尾草綠","#cbd5bd","照自己的速度生長。"],["薰衣草紫","#d2c4d9","不必急著給所有事情答案。"],["杏桃橘","#e8c5ad","今天也可以有一點熱情。"],["莓果紅","#d9adb4","把想說的話坦率地說出來。"],["燕麥米","#ddd2bd","簡單一點，反而更自在。"],["薄荷綠","#bdd8cd","換個角度，也許就有新解法。"],["灰紫","#c9bfce","留白不是浪費，是喘息。"],["葡萄紫","#c2b3cc","相信累積的力量。"],["檸檬奶綠","#dce2b4","別忘了給自己一點新鮮感。"],["乾燥玫瑰","#c99da8","不用完美，也能很有力量。"],["奶茶棕","#c9b39f","把生活過成自己喜歡的樣子。"],["灰霧綠","#b9c8b8","安靜地努力，也會被時間看見。"],["粉霧藍","#c2d2df","先深呼吸，答案不必立刻出現。"],["藕粉","#d8b8c2","善待自己不是偷懶。"],["陶土橘","#d5a58e","把熱情用在真正重要的事上。"],["香草白","#eee5d4","簡單的日子也有值得收藏的事。"],["霧銀灰","#c9c9c4","不必把每件事都放在心上。"],["海鹽藍","#b5cbd0","讓心情像潮汐一樣慢慢平復。"],["橄欖灰綠","#b8b99e","穩穩走，比急著證明更重要。"],["蜜桃粉","#e4b9b6","把喜歡的事留一點給今天。"],["灰薰衣草","#c5bfd3","偶爾迷路，也是在認識自己。"],["焦糖米","#d0b49a","把小事做好，就是很好的開始。"],["煙燻紫","#b9aaba","不用迎合每一種期待。"],["冰川藍","#c2d8df","清楚自己的節奏就很好。"],["豆沙紅","#c9959a","勇敢不一定大聲，也可以很安靜。"],["亞麻米","#d9cbb5","讓生活回到舒服的步調。"],["青瓷綠","#b7cec4","先照顧好自己，再照顧世界。"],["霧玫瑰","#d8b6bb","柔軟不是脆弱。"],["灰杏色","#d9c2ac","今天適合少一點苛責，多一點耐心。"],["遠山藍","#aebfcb","把注意力放回自己能掌握的地方。"],["苔蘚綠","#aeb9a0","慢慢累積，成果會找到出口。"],["淡珊瑚","#e2b5aa","把想法說清楚，關係就有新空間。"],["月光紫","#d1c8d9","不確定時，先選一個小方向。"],["燕麥粉","#d9c2bd","你也值得被自己的善意照顧。"],["霧松綠","#aabeb4","穩定前進，不需要喧鬧。"],["灰藍紫","#b9c1d2","放下不必要的比較。"],["奶油杏","#e5d0b2","替日常加一點輕盈。"],["乾燥薔薇","#cba7ae","保留界線，也保留溫柔。"],["雨後青","#b5cbc5","給自己一點重新開始的空間。"],["岩石灰","#bdbbb5","先處理能處理的，其他慢慢來。"],["淡芋紫","#d1c1d4","不用急著讓所有人理解你。"],["麥芽棕","#c5ad91","踏實就是一種很可靠的運氣。"],["灰橄欖","#c0c0a7","少一點分心，多一點自己的步伐。"],["霜白藍","#d0dce0","讓腦袋透透氣，再決定下一步。"],["杏仁奶","#e3d4c0","把平凡的一天過得有質感。"],["霧粉藕","#d8c1c0","給今天添一點柔和的新鮮感。"],["玫瑰灰","#ddc9c4","不必太用力，也能慢慢發光。"],["櫻桃奶霜","#e1d0c9","讓心情回到舒服的節奏。"],["莓果奶茶","#dcc9bc","把一點好心情留給自己。"],["粉杏霧","#dcd1c5","給今天添一點柔和的新鮮感。"],["珊瑚灰粉","#e0d8ca","不必太用力，也能慢慢發光。"],["晚霞粉","#dbd3bd","讓心情回到舒服的節奏。"],["裸粉棕","#dfdbc2","把一點好心情留給自己。"],["柔霧紅","#dfdfcb","給今天添一點柔和的新鮮感。"],["石榴奶粉","#d7dabe","不必太用力，也能慢慢發光。"],["奶油蜜桃","#d8dec3","讓心情回到舒服的節奏。"],["杏仁橘","#dae2c8","把一點好心情留給自己。"],["夕陽陶土","#cdd8c0","給今天添一點柔和的新鮮感。"],["肉桂杏","#cfddc4","不必太用力，也能慢慢發光。"],["乾燥柿橘","#d1e1c9","讓心情回到舒服的節奏。"],["楓糖棕","#c3dcbc","把一點好心情留給自己。"],["焦糖奶霜","#c8dcc5","給今天添一點柔和的新鮮感。"],["可可燕麥","#cae0cb","不必太用力，也能慢慢發光。"],["栗子奶茶","#bddbc1","讓心情回到舒服的節奏。"],["沙丘米","#c2dfc9","把一點好心情留給自己。"],["暖沙灰","#cbdfd3","給今天添一點柔和的新鮮感。"],["奶油象牙","#bedacc","不必太用力，也能慢慢發光。"],["珍珠灰白","#c3ded3","讓心情回到舒服的節奏。"],["霧銀米","#c8e2db","把一點好心情留給自己。"],["月岩灰","#c0d8d4","給今天添一點柔和的新鮮感。"],["雨雲灰","#c4dddc","不必太用力，也能慢慢發光。"],["煙藍灰","#c9e0e1","讓心情回到舒服的節奏。"],["灰海軍藍","#bcd6dc","把一點好心情留給自己。"],["牛仔霧藍","#c5d5dc","給今天添一點柔和的新鮮感。"],["海灣藍","#cad7e0","不必太用力，也能慢慢發光。"],["冰霧藍","#bdcbdb","讓心情回到舒服的節奏。"],["粉藍灰","#c2cddf","把一點好心情留給自己。"],["淺湖水","#cbd0df","給今天添一點柔和的新鮮感。"],["灰青瓷","#bec2da","不必太用力，也能慢慢發光。"],["海玻璃綠","#c3c4de","讓心情回到舒服的節奏。"],["薄霧青綠","#cbc8e2","把一點好心情留給自己。"],["尤加利灰綠","#c5c0d8","給今天添一點柔和的新鮮感。"],["森林鼠尾草","#ccc4dd","不必太用力，也能慢慢發光。"],["蕨葉綠","#d4c9e1","讓心情回到舒服的節奏。"],["橄欖奶綠","#cebcdc","把一點好心情留給自己。"],["青苔灰綠","#d4c5dc","給今天添一點柔和的新鮮感。"],["抹茶奶霜","#dccae0","不必太用力，也能慢慢發光。"],["梨子淡綠","#d8bddb","讓心情回到舒服的節奏。"],["香檳黃","#dfc2df","把一點好心情留給自己。"],["蜂蜜燕麥","#dfcbdc","給今天添一點柔和的新鮮感。"],["奶油芥黃","#dabed3","不必太用力，也能慢慢發光。"],["麥穗金米","#dec3d4","讓心情回到舒服的節奏。"],["薰衣草灰紫","#e2c8d6","把一點好心情留給自己。"],["鳶尾霧紫","#d8c0ca","給今天添一點柔和的新鮮感。"],["丁香奶紫","#ddc4cb","不必太用力，也能慢慢發光。"],["葡萄灰紫","#e1c9cd","讓心情回到舒服的節奏。"],["莓紫灰","#dcbcbe","把一點好心情留給自己。"]];
+const quotes=[{"text":"你不必一次就走到很遠的地方，先走出今天的第一步。","source":""},{"text":"給不確定方向的你：你值得擁有目標，也值得在追逐目標的途中被溫柔對待。","source":""},{"text":"即使今天只完成了一點點，那也是你親手替未來留下的痕跡。","source":""},{"text":"休息不是把人生按下暫停，而是讓自己有力氣繼續。","source":""},{"text":"不用等到完全準備好才開始；很多勇氣，都是開始之後才長出來的。","source":""},{"text":"你可以一邊害怕，一邊往前走。這兩件事並不衝突。","source":""},{"text":"把注意力放回眼前能做的事，遠方會在路上慢慢清楚。","source":""},{"text":"今天不用成為最厲害的人，只要比放棄的自己多走一步。","source":""},{"text":"慢一點沒關係，別因此忘記自己正在前進。","source":""},{"text":"你不需要把每一天都過得精彩，真實地生活就很了不起。","source":""},{"text":"有些答案不是想出來的，是走著走著才遇見的。","source":""},{"text":"允許自己重新開始，並不代表之前的努力白費。","source":""},{"text":"把自己照顧好，也是重要的待辦事項。","source":""},{"text":"今天的你不必補償昨天，只要好好過今天。","source":""},{"text":"先做一點，再做一點，微小的行動會慢慢連成路。","source":""},{"text":"不必同時解決人生所有問題，先處理眼前這一題。","source":""},{"text":"你可以改變方法，不必因此否定自己的方向。","source":""},{"text":"真正的進步，有時只是更願意理解自己。","source":""},{"text":"別把暫時的停頓，誤認成永遠的停滯。","source":""},{"text":"每一次誠實面對自己，都是重新掌舵的開始。","source":""},{"text":"把力氣留給重要的事，不必回應每一個聲音。","source":""},{"text":"不完美的開始，依然比腦海裡的完美計畫更靠近目標。","source":""},{"text":"你值得擁有成果，也值得享受沿途的生活。","source":""},{"text":"今天能完成的，就不必拿去懲罰明天的自己。","source":""},{"text":"有時候，最好的效率是知道什麼可以先不做。","source":""},{"text":"不用和別人的速度比賽，你的人生不是計時賽。","source":""},{"text":"疲憊時先休息，清醒後再做決定。","source":""},{"text":"把「我做不到」改成「我可以先試哪一小步」。","source":""},{"text":"生活不必每次都翻篇，有時只要換一行。","source":""},{"text":"你不需要一直有動力，建立一個容易開始的方法就好。","source":""},{"text":"把注意力從結果挪回過程，你會看見自己已經做了很多。","source":""},{"text":"真正適合你的路，不會要求你每天都背叛自己。","source":""},{"text":"有些日子用來衝刺，有些日子只要維持就好。","source":""},{"text":"不需要每個選擇都正確，願意修正也很重要。","source":""},{"text":"給自己一點時間，成長不是按一下就完成的設定。","source":""},{"text":"你可以期待更好的明天，也可以珍惜普通的今天。","source":""},{"text":"少一點反覆責怪，多一點具體行動。","source":""},{"text":"每一次收拾混亂，都是在替自己創造空間。","source":""},{"text":"不是所有事情都要立刻有答案，先讓問題待一會兒。","source":""},{"text":"當你開始照顧自己的注意力，時間也會慢慢回來。","source":""},{"text":"別忘了，你努力生活的樣子不只存在於成果裡。","source":""},{"text":"不必等別人肯定才承認自己的進步。","source":""},{"text":"今天只要比昨天更了解自己一點，就不算白過。","source":""},{"text":"把大目標拆小，不是降低期待，是讓期待能落地。","source":""},{"text":"願你有勇氣開始，也有耐心走過普通的日子。","source":""},{"text":"別急著證明自己，先把自己想做的事做好。","source":""},{"text":"你可以對未來有野心，也可以對今天有耐心。","source":""},{"text":"生活不是每次都要贏，有時候好好休息就是策略。","source":""},{"text":"把失誤當成資料，而不是對自己的判決。","source":""},{"text":"你不必一次變成理想中的自己，只要持續靠近。","source":""},{"text":"今天的你可以先把步伐放慢，也值得被好好對待。","source":""},{"text":"今天的你可以先把步伐放慢，先完成眼前的一小步就好。","source":""},{"text":"今天的你可以先把步伐放慢，請替自己留一點呼吸的空間。","source":""},{"text":"今天的你可以先把步伐放慢，不代表你沒有在前進。","source":""},{"text":"今天的你可以先把步伐放慢，可以把注意力帶回真正重要的事。","source":""},{"text":"今天的你可以先把步伐放慢，慢慢來，穩定比急著證明更長久。","source":""},{"text":"今天的你可以先把步伐放慢，允許自己用適合的速度成長。","source":""},{"text":"今天的你可以先把步伐放慢，先照顧好自己，再整理世界。","source":""},{"text":"今天的你可以先把步伐放慢，不必急著替今天下結論。","source":""},{"text":"今天的你可以先把步伐放慢，記得，你可以重新選擇下一步。","source":""},{"text":"如果心裡還有一點不確定，也值得被好好對待。","source":""},{"text":"如果心裡還有一點不確定，先完成眼前的一小步就好。","source":""},{"text":"如果心裡還有一點不確定，請替自己留一點呼吸的空間。","source":""},{"text":"如果心裡還有一點不確定，不代表你沒有在前進。","source":""},{"text":"如果心裡還有一點不確定，可以把注意力帶回真正重要的事。","source":""},{"text":"如果心裡還有一點不確定，慢慢來，穩定比急著證明更長久。","source":""},{"text":"如果心裡還有一點不確定，允許自己用適合的速度成長。","source":""},{"text":"如果心裡還有一點不確定，先照顧好自己，再整理世界。","source":""},{"text":"如果心裡還有一點不確定，不必急著替今天下結論。","source":""},{"text":"如果心裡還有一點不確定，記得，你可以重新選擇下一步。","source":""},{"text":"當事情看起來很多時，也值得被好好對待。","source":""},{"text":"當事情看起來很多時，先完成眼前的一小步就好。","source":""},{"text":"當事情看起來很多時，請替自己留一點呼吸的空間。","source":""},{"text":"當事情看起來很多時，不代表你沒有在前進。","source":""},{"text":"當事情看起來很多時，可以把注意力帶回真正重要的事。","source":""},{"text":"當事情看起來很多時，慢慢來，穩定比急著證明更長久。","source":""},{"text":"當事情看起來很多時，允許自己用適合的速度成長。","source":""},{"text":"當事情看起來很多時，先照顧好自己，再整理世界。","source":""},{"text":"當事情看起來很多時，不必急著替今天下結論。","source":""},{"text":"當事情看起來很多時，記得，你可以重新選擇下一步。","source":""},{"text":"別忘了在忙碌之間，也值得被好好對待。","source":""},{"text":"別忘了在忙碌之間，先完成眼前的一小步就好。","source":""},{"text":"別忘了在忙碌之間，請替自己留一點呼吸的空間。","source":""},{"text":"別忘了在忙碌之間，不代表你沒有在前進。","source":""},{"text":"別忘了在忙碌之間，可以把注意力帶回真正重要的事。","source":""},{"text":"別忘了在忙碌之間，慢慢來，穩定比急著證明更長久。","source":""},{"text":"別忘了在忙碌之間，允許自己用適合的速度成長。","source":""},{"text":"別忘了在忙碌之間，先照顧好自己，再整理世界。","source":""},{"text":"別忘了在忙碌之間，不必急著替今天下結論。","source":""},{"text":"別忘了在忙碌之間，記得，你可以重新選擇下一步。","source":""},{"text":"即使今天沒有驚人的成果，也值得被好好對待。","source":""},{"text":"即使今天沒有驚人的成果，先完成眼前的一小步就好。","source":""},{"text":"即使今天沒有驚人的成果，請替自己留一點呼吸的空間。","source":""},{"text":"即使今天沒有驚人的成果，不代表你沒有在前進。","source":""},{"text":"即使今天沒有驚人的成果，可以把注意力帶回真正重要的事。","source":""},{"text":"即使今天沒有驚人的成果，慢慢來，穩定比急著證明更長久。","source":""},{"text":"即使今天沒有驚人的成果，允許自己用適合的速度成長。","source":""},{"text":"即使今天沒有驚人的成果，先照顧好自己，再整理世界。","source":""},{"text":"即使今天沒有驚人的成果，不必急著替今天下結論。","source":""},{"text":"即使今天沒有驚人的成果，記得，你可以重新選擇下一步。","source":""},{"text":"當你又開始懷疑自己時，也值得被好好對待。","source":""},{"text":"當你又開始懷疑自己時，先完成眼前的一小步就好。","source":""},{"text":"當你又開始懷疑自己時，請替自己留一點呼吸的空間。","source":""},{"text":"當你又開始懷疑自己時，不代表你沒有在前進。","source":""},{"text":"當你又開始懷疑自己時，可以把注意力帶回真正重要的事。","source":""},{"text":"當你又開始懷疑自己時，慢慢來，穩定比急著證明更長久。","source":""},{"text":"當你又開始懷疑自己時，允許自己用適合的速度成長。","source":""},{"text":"當你又開始懷疑自己時，先照顧好自己，再整理世界。","source":""},{"text":"當你又開始懷疑自己時，不必急著替今天下結論。","source":""},{"text":"當你又開始懷疑自己時，記得，你可以重新選擇下一步。","source":""},{"text":"有些改變看起來很小，也值得被好好對待。","source":""},{"text":"有些改變看起來很小，先完成眼前的一小步就好。","source":""},{"text":"有些改變看起來很小，請替自己留一點呼吸的空間。","source":""},{"text":"有些改變看起來很小，不代表你沒有在前進。","source":""},{"text":"有些改變看起來很小，可以把注意力帶回真正重要的事。","source":""},{"text":"有些改變看起來很小，慢慢來，穩定比急著證明更長久。","source":""},{"text":"有些改變看起來很小，允許自己用適合的速度成長。","source":""},{"text":"有些改變看起來很小，先照顧好自己，再整理世界。","source":""},{"text":"有些改變看起來很小，不必急著替今天下結論。","source":""},{"text":"有些改變看起來很小，記得，你可以重新選擇下一步。","source":""},{"text":"生活偶爾不照計畫走，也值得被好好對待。","source":""},{"text":"生活偶爾不照計畫走，先完成眼前的一小步就好。","source":""},{"text":"生活偶爾不照計畫走，請替自己留一點呼吸的空間。","source":""},{"text":"生活偶爾不照計畫走，不代表你沒有在前進。","source":""},{"text":"生活偶爾不照計畫走，可以把注意力帶回真正重要的事。","source":""},{"text":"生活偶爾不照計畫走，慢慢來，穩定比急著證明更長久。","source":""},{"text":"生活偶爾不照計畫走，允許自己用適合的速度成長。","source":""},{"text":"生活偶爾不照計畫走，先照顧好自己，再整理世界。","source":""},{"text":"生活偶爾不照計畫走，不必急著替今天下結論。","source":""},{"text":"生活偶爾不照計畫走，記得，你可以重新選擇下一步。","source":""},{"text":"你不必把每個空白都填滿，也值得被好好對待。","source":""},{"text":"你不必把每個空白都填滿，先完成眼前的一小步就好。","source":""},{"text":"你不必把每個空白都填滿，請替自己留一點呼吸的空間。","source":""},{"text":"你不必把每個空白都填滿，不代表你沒有在前進。","source":""},{"text":"你不必把每個空白都填滿，可以把注意力帶回真正重要的事。","source":""},{"text":"你不必把每個空白都填滿，慢慢來，穩定比急著證明更長久。","source":""},{"text":"你不必把每個空白都填滿，允許自己用適合的速度成長。","source":""},{"text":"你不必把每個空白都填滿，先照顧好自己，再整理世界。","source":""},{"text":"你不必把每個空白都填滿，不必急著替今天下結論。","source":""},{"text":"你不必把每個空白都填滿，記得，你可以重新選擇下一步。","source":""},{"text":"在準備往下一步之前，也值得被好好對待。","source":""},{"text":"在準備往下一步之前，先完成眼前的一小步就好。","source":""},{"text":"在準備往下一步之前，請替自己留一點呼吸的空間。","source":""},{"text":"在準備往下一步之前，不代表你沒有在前進。","source":""},{"text":"在準備往下一步之前，可以把注意力帶回真正重要的事。","source":""},{"text":"在準備往下一步之前，慢慢來，穩定比急著證明更長久。","source":""},{"text":"在準備往下一步之前，允許自己用適合的速度成長。","source":""},{"text":"在準備往下一步之前，先照顧好自己，再整理世界。","source":""},{"text":"在準備往下一步之前，不必急著替今天下結論。","source":""},{"text":"在準備往下一步之前，記得，你可以重新選擇下一步。","source":""}];
+const spicy=["你不是沒時間，你是把時間拿去猶豫、滑手機，再怪自己沒進度。先做十分鐘，別再跟藉口開會。","醒醒。你一直等狀態好才開始，結果狀態都被你等沒了。先動手，情緒晚點再處理。","你可以累，但別把「我很累」當成所有事情都不必開始的通行證。挑最小的一件完成。","一直想著怎麼做得完美，最後只會得到一份完美的零進度。先交出粗糙的第一版。","沒有人會替你把待辦清單清空。少想人生大道理，多做眼前的小事。","你不是輸給能力，常常是還沒看到成果就先撤退。這次先做完再評價。","別把拖延包裝成「我還在規劃」。不動手的計畫只是紙上裝飾。","你想改變，卻把每個開始都延到明天。明天不會自動變勇敢，現在做十分鐘。","別再問自己準備好了沒，你連開始都還沒給自己機會。","你不是缺一套新方法，你缺的是把手邊那套方法用完。","別把研究工具當成工作本身，工具不會替你交作業。","你可以繼續焦慮，但焦慮不會幫你多完成一行。動起來。","計畫寫得像得獎企劃，執行卻像失聯人口，這不叫策略。","先別替失敗寫預告片，連第一幕都還沒演。","你一直等靈感，靈感也在等你先打開檔案。","如果每次都說「等一下」，那你真正的行程就是拖延。","你不是需要更多時間管理影片，你需要把影片關掉。","別再把忙著想當成忙著做，兩者差得可遠了。","做不好可以修改，沒做就只能繼續腦補。選一個。","你可以抱怨路難走，但腳還是得自己抬。","別再把「我個性就是這樣」當免責聲明，習慣是可以練的。","今天不必逆天改命，先把那件拖了三天的事處理掉。","你把事情想得越複雜，越容易合理化不開始。拆小，現在做。","別再等完美的空檔，空檔不會自己長出來。","你不是沒有選擇，你只是一直選最舒服的那個，然後嫌結果不夠好。","手機不會自己把你的人生偷走，是你一直把方向盤交出去。","別用「我效率很差」替自己貼標籤，先試著專心十五分鐘。","你可以不喜歡這件事，但不代表它會自己完成。","每次都從頭規劃，難怪永遠沒有進度。這次接著做，不要重開人生。","別把短暫的挫折升級成整個人的判決，收拾一下繼續。","你不需要熱血沸騰，只需要停止跟開始討價還價。","不是每個念頭都值得開會，有些念頭直接放過就好。","你想要結果，卻一直跳過最無聊的累積；結果當然不會空降。","少一點自我批評，多一點能留下紀錄的行動。","別拿別人的進度嚇自己，你連自己的下一步都還沒做。","你可以今天狀態普通，但別讓普通變成完全放棄的理由。","不要把一次沒做好當成永久免修課，回來補上就行。","你不是要一次做完全部，只是連五分鐘都還沒開始。","再漂亮的待辦清單，沒有勾掉任何一項都只是裝飾品。","你不必證明自己很努力，讓成果和紀錄替你說話。","別把「我不知道從哪開始」說一整天，先挑最明顯的一步。","如果這件事真的重要，就別只在腦中替它安排位置。","你不可能靠嫌棄自己變得更有效率，換成一個具體動作。","別把休息和逃避混為一談：休息會回復你，逃避只會加重明天。","你已經花很多時間想這件事了，現在該付一點行動成本。","別急著追求大爆發，先戒掉每次都半途消失的習慣。","你可以重新開始，但別每次都把重新開始當成拖延的新包裝。","沒人要求你今天成為傳奇，只要求你別再對自己放空頭支票。","想法很多不是問題，問題是每個想法都停在草稿階段。","好了，抱怨額度用完了嗎？挑一件事，現在去做。","直說吧：你現在不是卡住，先做五分鐘，再決定要不要繼續。","直說吧：你現在不是卡住，把下一步寫清楚，現在就動手。","直說吧：你現在不是卡住，再想下去也不會自動多出進度。","直說吧：你現在不是卡住，關掉干擾，完成一個最小任務。","直說吧：你現在不是卡住，別等心情批准，先開始再說。","直說吧：你現在不是卡住，把藉口放旁邊，讓行動上場。","直說吧：你現在不是卡住，你需要的是一個完成紀錄，不是新計畫。","直說吧：你現在不是卡住，做得粗糙也比永遠停在想像裡強。","直說吧：你現在不是卡住，別再把明天當成免費的垃圾桶。","直說吧：你現在不是卡住，先交出一版，之後才有資格修改。","提醒一下：先做五分鐘，再決定要不要繼續。","提醒一下：把下一步寫清楚，現在就動手。","提醒一下：再想下去也不會自動多出進度。","提醒一下：關掉干擾，完成一個最小任務。","提醒一下：別等心情批准，先開始再說。","提醒一下：把藉口放旁邊，讓行動上場。","提醒一下：你需要的是一個完成紀錄，不是新計畫。","提醒一下：做得粗糙也比永遠停在想像裡強。","提醒一下：別再把明天當成免費的垃圾桶。","提醒一下：先交出一版，之後才有資格修改。","別再替拖延換漂亮名字了，先做五分鐘，再決定要不要繼續。","別再替拖延換漂亮名字了，把下一步寫清楚，現在就動手。","別再替拖延換漂亮名字了，再想下去也不會自動多出進度。","別再替拖延換漂亮名字了，關掉干擾，完成一個最小任務。","別再替拖延換漂亮名字了，別等心情批准，先開始再說。","別再替拖延換漂亮名字了，把藉口放旁邊，讓行動上場。","別再替拖延換漂亮名字了，你需要的是一個完成紀錄，不是新計畫。","別再替拖延換漂亮名字了，做得粗糙也比永遠停在想像裡強。","別再替拖延換漂亮名字了，別再把明天當成免費的垃圾桶。","別再替拖延換漂亮名字了，先交出一版，之後才有資格修改。","冷靜看現況：先做五分鐘，再決定要不要繼續。","冷靜看現況：把下一步寫清楚，現在就動手。","冷靜看現況：再想下去也不會自動多出進度。","冷靜看現況：關掉干擾，完成一個最小任務。","冷靜看現況：別等心情批准，先開始再說。","冷靜看現況：把藉口放旁邊，讓行動上場。","冷靜看現況：你需要的是一個完成紀錄，不是新計畫。","冷靜看現況：做得粗糙也比永遠停在想像裡強。","冷靜看現況：別再把明天當成免費的垃圾桶。","冷靜看現況：先交出一版，之後才有資格修改。","你可以不想做，先做五分鐘，再決定要不要繼續。","你可以不想做，把下一步寫清楚，現在就動手。","你可以不想做，再想下去也不會自動多出進度。","你可以不想做，關掉干擾，完成一個最小任務。","你可以不想做，別等心情批准，先開始再說。","你可以不想做，把藉口放旁邊，讓行動上場。","你可以不想做，你需要的是一個完成紀錄，不是新計畫。","你可以不想做，做得粗糙也比永遠停在想像裡強。","你可以不想做，別再把明天當成免費的垃圾桶。","你可以不想做，先交出一版，之後才有資格修改。","醒醒，先做五分鐘，再決定要不要繼續。","醒醒，把下一步寫清楚，現在就動手。","醒醒，再想下去也不會自動多出進度。","醒醒，關掉干擾，完成一個最小任務。","醒醒，別等心情批准，先開始再說。","醒醒，把藉口放旁邊，讓行動上場。","醒醒，你需要的是一個完成紀錄，不是新計畫。","醒醒，做得粗糙也比永遠停在想像裡強。","醒醒，別再把明天當成免費的垃圾桶。","醒醒，先交出一版，之後才有資格修改。","這句可能有點刺耳：先做五分鐘，再決定要不要繼續。","這句可能有點刺耳：把下一步寫清楚，現在就動手。","這句可能有點刺耳：再想下去也不會自動多出進度。","這句可能有點刺耳：關掉干擾，完成一個最小任務。","這句可能有點刺耳：別等心情批准，先開始再說。","這句可能有點刺耳：把藉口放旁邊，讓行動上場。","這句可能有點刺耳：你需要的是一個完成紀錄，不是新計畫。","這句可能有點刺耳：做得粗糙也比永遠停在想像裡強。","這句可能有點刺耳：別再把明天當成免費的垃圾桶。","這句可能有點刺耳：先交出一版，之後才有資格修改。","先停止腦內辯論，先做五分鐘，再決定要不要繼續。","先停止腦內辯論，把下一步寫清楚，現在就動手。","先停止腦內辯論，再想下去也不會自動多出進度。","先停止腦內辯論，關掉干擾，完成一個最小任務。","先停止腦內辯論，別等心情批准，先開始再說。","先停止腦內辯論，把藉口放旁邊，讓行動上場。","先停止腦內辯論，你需要的是一個完成紀錄，不是新計畫。","先停止腦內辯論，做得粗糙也比永遠停在想像裡強。","先停止腦內辯論，別再把明天當成免費的垃圾桶。","先停止腦內辯論，先交出一版，之後才有資格修改。","如果你真的在乎這件事，先做五分鐘，再決定要不要繼續。","如果你真的在乎這件事，把下一步寫清楚，現在就動手。","如果你真的在乎這件事，再想下去也不會自動多出進度。","如果你真的在乎這件事，關掉干擾，完成一個最小任務。","如果你真的在乎這件事，別等心情批准，先開始再說。","如果你真的在乎這件事，把藉口放旁邊，讓行動上場。","如果你真的在乎這件事，你需要的是一個完成紀錄，不是新計畫。","如果你真的在乎這件事，做得粗糙也比永遠停在想像裡強。","如果你真的在乎這件事，別再把明天當成免費的垃圾桶。","如果你真的在乎這件事，先交出一版，之後才有資格修改。","來，今天不講大道理：先做五分鐘，再決定要不要繼續。","來，今天不講大道理：把下一步寫清楚，現在就動手。","來，今天不講大道理：再想下去也不會自動多出進度。","來，今天不講大道理：關掉干擾，完成一個最小任務。","來，今天不講大道理：別等心情批准，先開始再說。","來，今天不講大道理：把藉口放旁邊，讓行動上場。","來，今天不講大道理：你需要的是一個完成紀錄，不是新計畫。","來，今天不講大道理：做得粗糙也比永遠停在想像裡強。","來，今天不講大道理：別再把明天當成免費的垃圾桶。","來，今天不講大道理：先交出一版，之後才有資格修改。"];
+const fortuneReadings={"大吉":["好機會正在靠近，主動一點會比等待更有收穫。","今天的氣勢很不錯，適合把重要的事往前推進。","努力有機會得到回應，記得把握眼前的好時機。","適合嘗試新方法的一天，勇敢行動會看見突破。","整體順風，別因為太順利就忘了仔細確認。"],"吉":["運勢穩定中帶著好消息，踏實做事就有收穫。","今天適合按部就班，成果會比想像中更可靠。","有人事物可能帶來小驚喜，保持開放心情。","把握手上的資源，平常心反而容易發揮。","不必急著衝刺，穩定的選擇會帶你前進。"],"中吉":["今天有好有普通，抓住能掌握的部分就好。","事情大致平穩，細節多留意會更順利。","好運不算張揚，但藏在耐心與準備裡。","先完成重要的一件事，其他事情會逐漸明朗。","遇到小阻礙不用慌，調整步伐就能繼續。"],"小吉":["平凡的一天也有小小的好事，記得留意。","不用追求大突破，完成一件小事就很值得。","今天適合照顧好節奏，慢慢來也會有進展。","小小的善意可能帶來好心情，先從自己開始。","運氣藏在日常裡，別因為不轟烈就忽略它。"],"末吉":["進展可能慢一些，耐心比急著求結果更有用。","今天先把基礎顧好，後續會更容易走穩。","不必勉強一次到位，逐步修正就是好方法。","先處理眼前的問題，別讓擔心搶走太多心力。","暫時沒有大驚喜也沒關係，穩住就是進展。"],"凶":["今天適合保守行事，重要決定多確認一次。","遇到不順先別硬碰硬，停一下再找方法。","容易分心或出錯的一天，放慢速度能減少麻煩。","今天先避開衝動決定，把體力留給真正重要的事。","狀況不如預期也別慌，先穩住能掌握的部分。"]};
+
+function seededIndex(seed,max){let h=2166136261;for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0)%max}
+function drawScore(id,labelId,score,symbol){const box=$(id);box.innerHTML='';for(let i=1;i<=5;i++){const s=document.createElement('span');s.textContent=symbol;s.className=i<=score?'filled':'';s.style.animationDelay=(i*.07)+'s';box.appendChild(s)}$(labelId).textContent=`${score} 分｜${['先穩住步調','平平穩穩','有些小驚喜','值得期待','好好把握'][score-1]}`}
+function loadSaved(){let saved=[];try{saved=JSON.parse(localStorage.getItem('fortuneNotes')||'[]')}catch(e){}const box=$('savedQuotes');box.innerHTML='';if(!saved.length){box.innerHTML='<div class="empty">你收藏的句子會安靜地待在這裡。</div>';return}saved.slice().reverse().forEach((q,idx)=>{const el=document.createElement('article');el.className='saved-note';const p=document.createElement('p');p.textContent='「'+q.text+'」';const small=document.createElement('small');small.textContent=(q.date||'')+(q.source?' · '+q.source:'');const btn=document.createElement('button');btn.className='small-btn';btn.textContent='移除收藏';btn.onclick=()=>{let list=JSON.parse(localStorage.getItem('fortuneNotes')||'[]');list.splice(list.length-1-idx,1);localStorage.setItem('fortuneNotes',JSON.stringify(list));loadSaved()};el.append(p,small,document.createElement('br'),btn);box.appendChild(el)})}
+let currentQuote=null;
+function getTodayData(){try{return JSON.parse(localStorage.getItem('fortune-'+dateKey())||'null')}catch(e){return null}}
+function createTodayData(){
+ const key=dateKey();const seed=key+'-fortune-'+Math.random();
+ // 御神籤等級與整體運勢使用同一組結果，不再各自獨立亂數。
+ // 大吉較稀有，吉／中吉／小吉為主要結果，凶籤保留但機率較低。
+ const weighted=[
+  {index:0,weight:8},{index:1,weight:24},{index:2,weight:25},
+  {index:3,weight:22},{index:4,weight:15},{index:5,weight:6}
+ ];
+ let roll=Math.random()*weighted.reduce((sum,item)=>sum+item.weight,0),fi=1;
+ for(const item of weighted){roll-=item.weight;if(roll<0){fi=item.index;break}}
+ const fortuneScoreRanges=[[5,5],[4,5],[3,4],[3,4],[2,3],[1,2]];
+ const [minScore,maxScore]=fortuneScoreRanges[fi];
+ const overall=minScore+Math.floor(Math.random()*(maxScore-minScore+1));
+ const ci=seededIndex(seed+'c',colors.length),qi=seededIndex(seed+'q',quotes.length),si=seededIndex(seed+'s',spicy.length);
+ const level=fortunes[fi][0];const reading=fortuneReadings[level][seededIndex(seed+'reading',fortuneReadings[level].length)];
+ return {date:key,fortune:[level,reading],color:colors[ci],quote:quotes[qi],spicy:spicy[si],number:seededIndex(seed+'n',10),scores:[overall,1+seededIndex(seed+'score1',5),1+seededIndex(seed+'score2',5),1+seededIndex(seed+'score3',5)]};
+}
+
+
+function applyMutedLuckyColor(rawColor){
+ const card=document.getElementById('colorCard');
+ const swatch=document.getElementById('colorSwatch');
+ if(!card||!swatch)return;
+ const named={
+  '櫻花粉':'#d8a7b1','粉紅':'#d8a7b1','紅色':'#bd8588','酒紅':'#9f737b',
+  '橘色':'#c99a7b','杏色':'#d8b99b','黃色':'#c9b878','奶油黃':'#d9c99b',
+  '綠色':'#9eae98','薄荷綠':'#a8bdb1','藍色':'#91a8b9','天空藍':'#9fb8c5',
+  '紫色':'#b2a0ba','薰衣草紫':'#b5a5bc','棕色':'#a78b78','灰色':'#a9a8a3',
+  '白色':'#d7d2c9','黑色':'#77777a','金色':'#c4a96a','銀色':'#a9adb2',
+  '桃紅':'#c98d9c','珊瑚色':'#c99487','桃色':'#d7a69b','米色':'#d3c4ad',
+  '青色':'#91b6b2','靛藍':'#7f91aa','紫紅':'#ad879e','橄欖綠':'#a5a27d',
+  '霧霾藍':'#9fb3bc','鼠尾草綠':'#aeb9a1','薰衣草紫':'#b5a5bc',
+  '杏桃橘':'#d5ad91','莓果紅':'#c8959b','燕麥米':'#cfc3ad','灰紫':'#b4a9b8',
+  '葡萄紫':'#afa0bd','檸檬奶綠':'#c6cba0'
+ };
+ let hex=named[rawColor];
+ if(!hex&&/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(rawColor||'')){
+  let h=rawColor;
+  if(h.length===4)h='#'+h.slice(1).split('').map(c=>c+c).join('');
+  const rgb=[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+  const neutral=[207,195,185];
+  hex='#'+rgb.map((v,i)=>Math.round(v*.42+neutral[i]*.58).toString(16).padStart(2,'0')).join('');
+ }
+ if(!hex)hex='#b9a6b0';
+ // 只更新卡片左側色條與色票；卡片底色固定奶油色，名稱維持主題字色。
+ card.style.setProperty('--lucky-muted',hex);
+ card.style.backgroundColor='#fffaf0';
+ card.style.borderColor='#e4d2c9';
+ swatch.style.backgroundColor=hex;
+ swatch.style.boxShadow=`inset 0 0 0 1px rgba(90,70,70,.08), 0 3px 10px ${hex}55`;
+}
+
+function showData(data){
+ // Render all parts of today's saved fortune in one place.
+ if(!data) return;
+ const fortune = Array.isArray(data.fortune) ? data.fortune : ['小吉','今天適合把步調放慢一點，照顧好眼前的事。'];
+ const color = Array.isArray(data.color) ? data.color : ['櫻花粉','#f5d6df','把溫柔留一點給自己。'];
+ const quote = data.quote && typeof data.quote === 'object' ? data.quote : {text:'今天也請記得，慢慢走也算前進。',source:''};
+ $('fortuneLevel').textContent=fortune[0]||'小吉';
+ $('fortuneReading').textContent=fortune[1]||'今天先把眼前的一步走好。';
+ $('fortuneDate').textContent=dateLabel();
+ $('colorName').textContent=color[0]||'今日幸運色';
+ $('colorAdvice').textContent=color[2]||'把喜歡的顏色當成今天的小小提醒。';
+ $('colorSwatch').style.background=color[1]||'#f5d6df';
+ applyMutedLuckyColor(color[1]||color[0]||'櫻花粉');
+ $('luckyNumber').textContent=Number.isInteger(data.number)?String(data.number):'7';
+ currentQuote=quote;
+ $('quoteText').textContent=quote.text||'今天也值得被溫柔對待。';
+ $('quoteSource').textContent=quote.source||'';
+ $('spicyText').textContent=data.spicy||'少一點猶豫，先把眼前的一步做完。';
+ const scores=Array.isArray(data.scores)?data.scores:[3,3,3,3];
+ // 舊版已儲存的籤可能與分數不一致；顯示時依籤等級校正整體分數。
+ const levelIndex=Math.max(0,fortunes.findIndex(f=>f[0]===fortune[0]));
+ const scoreRanges=[[5,5],[4,5],[3,4],[3,4],[2,3],[1,2]];
+ const [minOverall,maxOverall]=scoreRanges[levelIndex]||[3,4];
+ let overall=Number(scores[0]);
+ if(!Number.isFinite(overall))overall=minOverall;
+ overall=Math.max(minOverall,Math.min(maxOverall,Math.round(overall)));
+ scores[0]=overall;
+ if(data.date===dateKey()){
+  try{localStorage.setItem('fortune-'+dateKey(),JSON.stringify({...data,scores}));}catch(e){}
+ }
+ drawScore('overallScore','overallLabel',overall,'✿');
+ drawScore('loveScore','loveLabel',scores[1]||1,'♥');
+ drawScore('moneyScore','moneyLabel',scores[2]||1,'＄');
+ drawScore('workScore','workLabel',scores[3]||1,'▤');
+ $('saveQuote').textContent='♡ 收藏這句';
+ try{
+  const saved=JSON.parse(localStorage.getItem('fortuneNotes')||'[]');
+  if(saved.some(q=>q.text===currentQuote.text)) $('saveQuote').textContent='✓ 已收藏';
+ }catch(e){}
+}
+
+function setDrawnState(drawn){
+ $('drawButton').disabled=drawn;
+ $('drawButton').textContent=drawn?'今日已翻開 ✧':'打開籤紙 ✧';
+ $('bookTitle').textContent=drawn?'今天的籤，已經展開。':'今天的頁面，還沒翻開。';
+ $('bookText').textContent=drawn?'把想提醒自己的事，輕輕收好。':'深呼吸，讓今天從一個小小的儀式開始。';
+ if(drawn){$('book').classList.add('open');$('result').classList.add('show')}
+}
+function initializeToday(){
+ const existing=getTodayData();
+ if(existing){showData(existing);setDrawnState(true)}
+ else {
+  $('fortuneLevel').textContent='？';$('fortuneReading').textContent='今天的籤紙還在等你親手打開。';$('fortuneDate').textContent=dateLabel();
+  $('colorName').textContent='等待抽籤';$('colorAdvice').textContent='翻開今天，看看屬於你的顏色。';$('colorSwatch').style.background='#f5e8e8';
+  $('luckyNumber').textContent='—';$('quoteText').textContent='今天的話，等你打開籤紙再來相遇。';$('quoteSource').textContent='';$('spicyText').textContent='先別急著被罵，抽完再說。';
+  [['overallScore','overallLabel'],['loveScore','loveLabel'],['moneyScore','moneyLabel'],['workScore','workLabel']].forEach(([id,lid])=>{ $(id).innerHTML='<span>·</span><span>·</span><span>·</span><span>·</span><span>·</span>';$(lid).textContent='翻開今天查看運勢';});
+  setDrawnState(false);
+ }
+}
+function animateDraw(){
+ // Re-check storage on every click so another tab cannot accidentally redraw today's fortune.
+ const existing=getTodayData();
+ if(existing){showData(existing);setDrawnState(true);$('result').classList.add('show');
+  setTimeout(()=>{const target=document.querySelector('#result .omikuji')||document.getElementById('result');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},220);return}
+ $('book').classList.add('open');$('bookTitle').textContent='籤紙正在慢慢展開…';$('bookText').textContent='給今天一點時間。';
+ $('drawButton').disabled=true;$('drawButton').textContent='翻頁中…';
+ setTimeout(()=>{
+  const data=getTodayData()||createTodayData();
+  // Store once per local calendar day. Never overwrite today's saved draw.
+  try{if(!getTodayData())localStorage.setItem('fortune-'+dateKey(),JSON.stringify(data));}catch(storageError){
+   // Continue showing today's result even if browser storage is unavailable.
+  }
+  const finalData=getTodayData()||data;showData(finalData);
+  $('result').classList.remove('show');void $('result').offsetWidth;$('result').classList.add('show');
+  setTimeout(()=>{const target=document.querySelector('#result .omikuji')||document.getElementById('result');if(target)target.scrollIntoView({behavior:'smooth',block:'start'});},220);
+  setDrawnState(true);
+ },950)
+}
+$('drawButton').addEventListener('click',animateDraw);
+$('jumpButton').addEventListener('click',()=>$('drawSection').scrollIntoView({behavior:'smooth'}));
+$('saveQuote').addEventListener('click',()=>{if(!currentQuote)return;let list=[];try{list=JSON.parse(localStorage.getItem('fortuneNotes')||'[]')}catch(e){}if(list.some(q=>q.text===currentQuote.text)){ $('saveQuote').textContent='✓ 已收藏';return}list.push({...currentQuote,date:dateLabel()});localStorage.setItem('fortuneNotes',JSON.stringify(list));$('saveQuote').textContent='✓ 已收藏';loadSaved()});
+$('topButton').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+const observer = ('IntersectionObserver' in window)
+ ? new IntersectionObserver(entries=>entries.forEach(e=>{
+    if(e.isIntersecting){
+     e.target.classList.add('visible');
+    }else{
+     // Reset the reveal state so the element animates again when scrolling back up.
+     e.target.classList.remove('visible');
+    }
+   }),{threshold:.12, rootMargin:'0px 0px -4% 0px'})
+ : null;
+document.querySelectorAll('.reveal').forEach(el=>{
+ if(observer) observer.observe(el); else el.classList.add('visible');
+});
+initializeToday();loadSaved();
+// Scroll-driven motion: progress ribbon, gently drifting stationery, and staggered reveal cards.
+const progress=$('scrollProgress');
+let lastScrollY=window.scrollY;
+function updateScrollDecor(){
+ const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+ const y=Math.max(0,Math.min(window.scrollY,max));
+ progress.style.width=(y/max*100)+'%';
+ // Decorations drift in opposite directions and naturally reverse when the user scrolls upward.
+ document.querySelectorAll('.scroll-sparkle').forEach((el,i)=>{
+  const direction=(i%2===0?1:-1);
+  el.style.transform=`translateY(${y*0.025*direction}px)`;
+ });
+ lastScrollY=y;
+}
+window.addEventListener('scroll',updateScrollDecor,{passive:true});updateScrollDecor();
+document.querySelectorAll('.card,.saved-note').forEach((el,i)=>{
+ el.classList.add('reveal');el.style.transitionDelay=(i%4)*70+'ms';
+ if(observer) observer.observe(el); else el.classList.add('visible');
+});
+</script>
+
+<script>
+/* 運勢筆記擴充功能：使用本機儲存，不會改變每日一籤的規則。 */
+(()=>{
+ const $f=id=>document.getElementById(id);
+ const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+ const read=(key,fallback)=>{try{const v=localStorage.getItem(key);return v===null?fallback:JSON.parse(v)}catch(e){return fallback}};
+ const write=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value));return true}catch(e){return false}};
+ const dailyKey=day=>'fortune-'+day;
+ const getDaily=day=>read(dailyKey(day),null);
+ const allDraws=()=>{
+   const list=[];
+   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&/^fortune-\d{4}-\d{2}-\d{2}$/.test(k)){const d=read(k,null);if(d&&d.date)list.push(d)}}}catch(e){}
+   return list.sort((a,b)=>a.date.localeCompare(b.date));
+ };
+ const seasonal=()=>{
+   const m=new Date().getMonth()+1;
+   if([3,4,5].includes(m))return {icon:'🌸',title:'春日限定小箋',text:'不用急著盛開，先把根扎穩。你正在走向自己的春天。'};
+   if([6,7,8].includes(m))return {icon:'🍧',title:'夏日限定小箋',text:'留一點清涼給自己。忙碌的日子裡，也要記得喝水、休息。'};
+   if([9,10,11].includes(m))return {icon:'🍁',title:'秋日限定小箋',text:'有些事慢慢整理就好。把不再需要的焦慮，留在風裡。'};
+   return {icon:'❄️',title:'冬日限定小箋',text:'天冷了，也請好好照顧自己。你不必在每個季節都全力奔跑。'};
+ };
+ const tasksByFortune={
+   '財運':['記錄今天的一筆支出','整理一下錢包或付款紀錄','今天購物前先停十秒想一想'],
+   '課業・工作':['專心完成一項待辦','整理一份筆記或檔案','先做最容易開始的十分鐘'],
+   '自我照顧':['喝一杯水，伸展一下肩頸','留十分鐘不看手機','今天早一點讓自己休息']
+ };
+ const defaultTasks=['完成一件最重要的小事','留十分鐘給自己喘口氣','整理一個桌面或檔案'];
+ const getTaskState=()=>read('fortuneTasks-'+todayKey(),{});
+ const setTaskState=s=>write('fortuneTasks-'+todayKey(),s);
+ const moodState=()=>read('fortuneMood-'+todayKey(),null);
+ const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function drawTasks(){
+   const box=$f('taskList');if(!box)return;
+   const state=getTaskState();
+   box.innerHTML='';
+   defaultTasks.forEach((task,i)=>{
+     const label=document.createElement('label');label.className='task-item'+(state[i]?' done':'');
+     const input=document.createElement('input');input.type='checkbox';input.checked=!!state[i];input.setAttribute('aria-label',task);
+     input.addEventListener('change',()=>{const s=getTaskState();s[i]=input.checked;setTaskState(s);label.classList.toggle('done',input.checked);updateStats();});
+     const span=document.createElement('span');span.textContent=task;
+     label.append(input,span);box.appendChild(label);
+   });
+   const done=Object.values(state).filter(Boolean).length;
+   $f('taskStatus').textContent=done===0?'不用一次完成全部，完成一件也算今天的進度。':done===3?'今天的三件小事都完成了，替自己蓋一枚想像中的小花章！':`已完成 ${done}/3 件小事，慢慢來就很好。`;
+ }
+ function setupMood(){
+   const selected=moodState();
+   document.querySelectorAll('#moodOptions [data-mood]').forEach(btn=>{
+     btn.setAttribute('aria-pressed',String(btn.dataset.mood===selected));
+     btn.addEventListener('click',()=>{
+       write('fortuneMood-'+todayKey(),btn.dataset.mood);
+       document.querySelectorAll('#moodOptions [data-mood]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
+       $f('moodStatus').textContent=`今天的心情已收進手帳：${btn.textContent.trim()}。`;
+       updateStats();
+     });
+   });
+   $f('moodStatus').textContent=selected?`今天的心情已收進手帳：${selected}。`:'選一枚最接近此刻的心情印章，會記錄在今天的手帳裡。';
+ }
+ function updateSeason(){
+   const s=seasonal();$f('seasonIcon').textContent=s.icon;$f('seasonTitle').textContent=s.title;$f('seasonText').textContent=s.text;
+ }
+ function monthState(){return read('fortuneCalendarMonth',{y:new Date().getFullYear(),m:new Date().getMonth()})}
+ function setMonth(y,m){const d=new Date(y,m,1);write('fortuneCalendarMonth',{y:d.getFullYear(),m:d.getMonth()});renderCalendar()}
+ function renderCalendar(){
+   const state=monthState(),year=state.y,month=state.m;
+   const first=new Date(year,month,1),days=new Date(year,month+1,0).getDate(),offset=first.getDay();
+   $f('calendarTitle').textContent=`${year} 年 ${month+1} 月`;
+   const box=$f('fortuneCalendar');box.innerHTML='';
+   ['日','一','二','三','四','五','六'].forEach(w=>{const el=document.createElement('div');el.className='calendar-weekday';el.textContent=w;box.appendChild(el)});
+   for(let i=0;i<offset;i++){const el=document.createElement('div');el.className='calendar-day empty-day';box.appendChild(el)}
+   const today=todayKey();
+   for(let day=1;day<=days;day++){
+     const key=`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+     const data=getDaily(key),el=document.createElement('button');el.className='calendar-day'+(data?' has-draw':'')+(key===today?' today':'');el.textContent=day;el.disabled=!data;
+     el.setAttribute('aria-label',`${key}${data?'，點選回顧御神籤':'，尚無籤紙'}`);
+     if(data)el.addEventListener('click',()=>showArchived(data));
+     box.appendChild(el);
+   }
+ }
+ function showArchived(data){
+   const box=$f('selectedFortune');box.style.display='block';box.innerHTML='';
+   const title=document.createElement('strong');title.textContent=`${data.date}・${data.fortune?.[0]||'御神籤'}`;
+   const p=document.createElement('p');p.textContent=data.fortune?.[1]||'把這一天收進回憶裡。';p.style.margin='5px 0';
+   const meta=document.createElement('small');meta.textContent=`幸運色：${data.color?.[0]||'—'}　幸運數字：${data.number??'—'}`;
+   box.append(title,p,meta);
+ }
+ function renderHistory(){
+   const draws=allDraws().slice().reverse(),box=$f('fortuneHistory');box.innerHTML='';
+   if(!draws.length){box.innerHTML='<div class="empty">抽過的籤會收進這裡，成為你的日常收藏。</div>';return}
+   draws.slice(0,12).forEach(d=>{
+     const el=document.createElement('article');el.className='history-entry';
+     const strong=document.createElement('strong');strong.textContent=`${d.fortune?.[0]||'今日籤'} · ${d.date}`;
+     const p=document.createElement('p');p.textContent=d.fortune?.[1]||'';p.style.margin='5px 0';
+     const small=document.createElement('small');small.textContent=`${d.rarity?.label?d.rarity.label+' · ':''}幸運色 ${d.color?.[0]||'—'} · 數字 ${d.number??'—'}`;
+     el.append(strong,p,small);box.appendChild(el);
+   });
+ }
+ const badgeDefs=[
+   {id:'first',icon:'🌱',title:'初次相遇',desc:'抽出第一支御神籤',test:s=>s.draws>=1},
+   {id:'three',icon:'🌷',title:'日常拾花',desc:'累積抽籤 3 天',test:s=>s.draws>=3},
+   {id:'seven',icon:'🌼',title:'一週小旅程',desc:'累積抽籤 7 天',test:s=>s.draws>=7},
+   {id:'mood',icon:'🍮',title:'好好感受',desc:'記錄過一次心情',test:s=>s.moods>=1},
+   {id:'task',icon:'⭐',title:'小事完成家',desc:'完成一件今日任務',test:s=>s.tasks>=1},
+   {id:'rare',icon:'✨',title:'幸運拾光者',desc:'抽到一支稀有籤',test:s=>s.rare>=1},
+   {id:'secret',icon:'🔮',title:'找到秘密',desc:'發現隱藏小花彩蛋',test:s=>s.secret}
+ ];
+ function updateStats(){
+   const draws=allDraws(),moods=[];
+   try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('fortuneMood-')&&localStorage.getItem(k))moods.push(k)}}catch(e){}
+   let completed=0;try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('fortuneTasks-')){const v=read(k,{});completed+=Object.values(v).filter(Boolean).length}}}catch(e){}
+   const stats={draws:draws.length,moods:moods.length,tasks:completed,rare:draws.filter(d=>['rare','secret'].includes(d.rarity?.id)).length,secret:read('fortuneSecretFound',false)};
+   const box=$f('badgeList');box.innerHTML='';
+   badgeDefs.forEach(b=>{
+     const unlocked=b.test(stats),el=document.createElement('div');el.className='badge-chip'+(unlocked?' unlocked':'');
+     const icon=document.createElement('span');icon.className='badge-icon';icon.textContent=b.icon;
+     const txt=document.createElement('div'),strong=document.createElement('strong'),small=document.createElement('small');
+     strong.textContent=b.title;small.textContent=unlocked?'已解鎖 · '+b.desc:b.desc;txt.append(strong,small);el.append(icon,txt);box.appendChild(el);
+   });
+   renderHistory();renderCalendar();
+ }
+ function playChime(){
+   if(!$f('soundToggle')?.checked)return;
+   try{
+     const Ctx=window.AudioContext||window.webkitAudioContext;if(!Ctx)return;
+     const ctx=new Ctx(),now=ctx.currentTime;
+     [[660,0],[880,.13],[1174.66,.26]].forEach(([freq,delay])=>{
+       const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type='sine';osc.frequency.value=freq;
+       gain.gain.setValueAtTime(.0001,now+delay);gain.gain.exponentialRampToValueAtTime(.07,now+delay+.025);gain.gain.exponentialRampToValueAtTime(.0001,now+delay+.32);
+       osc.connect(gain);gain.connect(ctx.destination);osc.start(now+delay);osc.stop(now+delay+.34);
+     });
+     setTimeout(()=>ctx.close().catch(()=>{}),800);
+   }catch(e){}
+ }
+ function vibrate(){
+   if(!$f('vibrationToggle')?.checked)return;
+   try{if('vibrate'in navigator)navigator.vibrate([35,45,55])}catch(e){}
+ }
+ function addRarity(data){
+   if(!data)return;
+   if(!data.rarity){
+     // Rare and secret fortunes are intentionally uncommon, and the chosen result is saved for the whole day.
+     const n=Math.random();
+     data.rarity=n<.012?{id:'secret',label:'✧ 隱藏限定籤'}:n<.07?{id:'rare',label:'✦ 稀有籤'}:n<.24?{id:'uncommon',label:'✿ 特別籤'}:{id:'common',label:'日常籤'};
+     write(dailyKey(data.date),data);
+   }
+   const card=document.querySelector('#result .omikuji');
+   if(card){
+     card.classList.remove('rarity-common','rarity-uncommon','rarity-rare','rarity-secret');
+     card.classList.add('rarity-'+(data.rarity.id||'common'));
+     let tag=card.querySelector('.rarity-tag');
+     if(!tag){tag=document.createElement('div');tag.className='rarity-tag';card.querySelector('.kicker')?.insertAdjacentElement('afterend',tag)}
+     tag.textContent=data.rarity.label||'日常籤';
+   }
+ }
+ function refreshAll(){
+   const data=getDaily(todayKey());if(data)addRarity(data);
+   updateSeason();drawTasks();setupMood();updateStats();
+   if(data)addRarity(data);
+ }
+ function findSecret(){
+   const key='fortuneSecretClicks',count=(read(key,0)||0)+1;write(key,count);
+   const stamp=$f('secretStamp');if(stamp){stamp.style.transform=`rotate(${count%2?8:-8}deg) scale(${1+Math.min(count,5)*.04})`}
+   if(count>=5){
+     write('fortuneSecretFound',true);$f('secretMessage').classList.add('show');
+     $f('secretMessage').scrollIntoView({behavior:'smooth',block:'center'});updateStats();
+   }
+ }
+ // Sound/haptic feedback is tied to an explicit user click; no autoplay.
+ $f('drawButton')?.addEventListener('click',()=>{playChime();vibrate();setTimeout(()=>{const d=getDaily(todayKey());if(d){addRarity(d);updateStats()}},1150)},true);
+ $f('monthPrev')?.addEventListener('click',()=>{const s=monthState();setMonth(s.y,s.m-1)});
+ $f('monthNext')?.addEventListener('click',()=>{const s=monthState();setMonth(s.y,s.m+1)});
+ $f('secretStamp')?.addEventListener('click',findSecret);
+ $f('secretStamp')?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();findSecret()}});
+ // Re-render enhancement panels whenever the original app completes a draw.
+ // Wrap the original renderer so rarity styling is applied immediately on both fresh and restored draws.
+ const originalShowData=showData;
+ showData=function(data){originalShowData(data);addRarity(data);updateStats()};
+ refreshAll();
+})();
+</script>
+
+</body>
+</html>
