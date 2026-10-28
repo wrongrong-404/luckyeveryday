@@ -210,6 +210,74 @@ footer{text-align:center;padding:30px 10px 45px;color:#a58d9a;font-size:.82rem;l
 #colorCard .lucky-color{border-left:0;padding-left:0}
 #colorCard .lucky-color strong{color:var(--ink);transition:color .7s ease}
 
+
+/* ===== 隱藏彩蛋：想睡覺的貓咪（點愛心章三下） ===== */
+.cat-key.nudge{animation:catNudge .35s ease}
+@keyframes catNudge{50%{scale:1.18}}
+.egg-layer,.egg-loaf,.egg-blanket{display:none}
+body.cat-mode .egg-layer,body.cat-mode .egg-loaf,body.cat-mode .egg-blanket{display:block}
+.egg-layer{position:fixed;left:0;bottom:0;width:100%;height:0;z-index:4;pointer-events:none}
+.egg-walker{position:absolute;left:14px;bottom:8px;width:128px;height:106px;transform-origin:left bottom;transform:translateX(-190px)}
+.egg-walker.walking{animation:eggWalkIn 6.5s linear forwards}
+.egg-walker.dozing{transform:none}
+.egg-walker svg,.egg-loaf svg,.egg-blanket svg{display:block;overflow:visible}
+.cat-stand{position:absolute;left:22px;bottom:0;width:84px;transform-origin:50% 100%;transition:opacity .25s}
+.egg-walker.walking .cat-stand{animation:eggWaddle .9s ease-in-out infinite}
+.egg-walker.walking .f1{animation:eggFoot .9s ease-in-out infinite}
+.egg-walker.walking .f2{animation:eggFoot .9s ease-in-out infinite -.45s}
+.egg-walker.dozing .cat-stand{opacity:0}
+.egg-curl{position:absolute;left:0;bottom:0;width:128px;opacity:0;visibility:hidden}
+.egg-curl svg,.egg-pet svg{width:100%}
+.egg-walker.dozing .egg-curl{opacity:1;visibility:visible;pointer-events:auto;cursor:pointer}
+.egg-walker.dozing .egg-curl svg{transform-origin:50% 100%;animation:eggSquish .6s ease-out both,eggBreathe 4.4s ease-in-out .6s infinite}
+.egg-loaf{position:relative;margin:0 0 -3px;padding-right:38px}
+.egg-loaf .egg-pet{position:relative;width:104px;margin-left:auto;cursor:pointer}
+.egg-blanket{position:relative;width:132px;margin:0 auto 12px}
+.egg-blanket .egg-pet{cursor:pointer}
+body.cat-mode .egg-loaf svg{transform-origin:50% 100%;animation:eggPop .6s cubic-bezier(.3,1.5,.5,1) both,eggBreathe 4.2s ease-in-out .6s infinite}
+body.cat-mode .egg-blanket svg{animation:eggPop .6s cubic-bezier(.3,1.5,.5,1) both}
+.cat-loaf .tail{transform-origin:116px 52px;animation:eggTail 2.6s ease-in-out infinite}
+.cat-blanket .bhead{transform-origin:70px 66px;animation:eggNod 5.5s ease-in-out infinite}
+.cat-blanket .tinycat{animation:eggPeek 3.8s ease-in-out infinite}
+.zzz{position:absolute;width:40px;height:40px;fill:none;stroke:#705268;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.zzz path{opacity:0;animation:eggZ 3.6s ease-in-out infinite}
+.zzz .z2{animation-delay:1.1s}.zzz .z3{animation-delay:2.2s}
+.egg-curl .zzz{left:44px;top:-34px}
+.egg-loaf .zzz{right:92px;top:-32px}
+.egg-blanket .zzz{left:92px;top:-28px}
+.egg-pet.purr{animation:eggPurr .28s ease-in-out 3}
+.egg-heart{position:fixed;z-index:6;pointer-events:none;color:#c96589;font-size:20px;translate:-50% -50%;animation:eggHeart 1.1s ease-out forwards}
+@keyframes eggWalkIn{from{transform:translateX(-190px)}to{transform:translateX(0)}}
+@keyframes eggWaddle{0%,100%{rotate:-2deg;translate:0 0}50%{rotate:2deg;translate:0 -3px}}
+@keyframes eggFoot{0%,100%{translate:0 0}50%{translate:0 -4px}}
+@keyframes eggSquish{0%{transform:scale(1.12,.8)}60%{transform:scale(.96,1.08)}100%{transform:scale(1)}}
+@keyframes eggBreathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.045)}}
+@keyframes eggPop{0%{transform:scale(.4);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes eggTail{0%,100%{rotate:0deg}50%{rotate:-14deg}}
+@keyframes eggNod{0%,100%{rotate:0deg}40%,60%{rotate:3deg}}
+@keyframes eggPeek{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes eggZ{0%{opacity:0;transform:translate(0,6px)}25%{opacity:1}100%{opacity:0;transform:translate(6px,-16px)}}
+@keyframes eggPurr{0%,100%{translate:0 0}25%{translate:-2px 0}75%{translate:2px 0}}
+@keyframes eggHeart{from{opacity:1;transform:translateY(0) scale(.7)}to{opacity:0;transform:translateY(-46px) scale(1.2)}}
+@media(max-width:620px){.egg-walker{scale:.78}.egg-loaf{padding-right:18px}}
+@media(prefers-reduced-motion:reduce){.zzz path{opacity:.75!important}}
+
+/* ===== 常駐打招呼貓咪 ===== */
+.greeter{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;margin:2px auto -18px;pointer-events:none}
+.greet-bubble{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;min-height:3.1em;max-width:min(300px,86vw);margin:0 0 10px;padding:7px 16px;background:#fffaf0;border:1.5px solid #d9bd68;border-radius:16px;box-shadow:3px 4px 0 #eadbbf;font-size:.9rem;line-height:1.5;color:var(--ink)}
+.greet-bubble:after{content:"";position:absolute;left:50%;bottom:-7px;width:10px;height:10px;background:#fffaf0;border-right:1.5px solid #d9bd68;border-bottom:1.5px solid #d9bd68;transform:translateX(-50%) rotate(45deg)}
+.greet-bubble.pop{animation:greetPop .45s cubic-bezier(.3,1.5,.5,1)}
+.greet-cat{display:block;width:96px;padding:0;border:0;background:none;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.greet-cat:focus-visible{outline:2px solid #c77995;outline-offset:3px;border-radius:14px}
+.greet-cat svg{display:block;width:100%;overflow:visible}
+.greet-cat .wave{transform-origin:76px 90px}
+.greet-cat.talking .wave{animation:greetWave .55s ease-in-out 5}
+.greet-cat .gtail{transform-origin:34px 108px;animation:greetTail 3s ease-in-out infinite}
+.greet-cat .geyes{transform-origin:55px 54px;animation:greetBlink 5s infinite}
+@keyframes greetWave{0%,100%{rotate:0deg}50%{rotate:-18deg}}
+@keyframes greetTail{0%,100%{rotate:0deg}50%{rotate:-9deg}}
+@keyframes greetBlink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@keyframes greetPop{0%{transform:scale(.88);opacity:.4}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -222,7 +290,7 @@ footer{text-align:center;padding:30px 10px 45px;color:#a58d9a;font-size:.82rem;l
     <div class="tiny">A LITTLE NOTE FOR TODAY</div>
     <h1>運勢筆記</h1>
     <p>把日子翻開一頁。願你帶著一點勇氣，去過自己的今天。</p>
-    <div aria-hidden="true" style="margin:20px 0 25px"><span class="stamp secret-stamp" id="secretStamp" role="button" tabindex="0" aria-label="神秘小花">✿</span><span class="stamp" style="transform:rotate(5deg)">☘</span><span class="stamp" style="transform:rotate(-3deg)">♡</span></div>
+    <div aria-hidden="true" style="margin:20px 0 25px"><span class="stamp secret-stamp" id="secretStamp" role="button" tabindex="0" aria-label="神秘小花">✿</span><span class="stamp" style="transform:rotate(5deg)">☘</span><span class="stamp secret-stamp cat-key" id="catStamp" role="button" tabindex="0" aria-label="愛心章" style="transform:rotate(-3deg)">♡</span></div>
     <button class="primary" id="jumpButton">翻開今天　↗</button>
   </section>
 
@@ -255,7 +323,7 @@ footer{text-align:center;padding:30px 10px 45px;color:#a58d9a;font-size:.82rem;l
       <article class="card" style="--accent:#b5a2bd"><h3>＄ 財運</h3><div class="five" id="moneyScore" aria-label="財運"></div><div class="score-label" id="moneyLabel"></div></article>
       <article class="card" style="--accent:#a9bd9a"><h3>▤ 課業・工作</h3><div class="five" id="workScore" aria-label="課業工作"></div><div class="score-label" id="workLabel"></div></article>
       <article class="card" id="colorCard" style="--accent:#e9c4ce;grid-column:1/-1"><h3>今日幸運顏色</h3><div class="lucky-color"><div class="swatch" id="colorSwatch"></div><div><strong id="colorName">櫻花粉</strong><p id="colorAdvice">把溫柔留一點給自己。</p></div></div></article>
-      <article class="card"><h3>幸運數字</h3><p style="font-size:2.2rem;margin:0;color:#c96589" id="luckyNumber">7</p><p>不是答案，只是今天的小小暗號。</p></article>
+      <article class="card"><h3>幸運數字</h3><p style="font-size:2.2rem;margin:0;color:#c96589" id="luckyNumber">7</p><p id="luckyNote">不是答案，只是今天的小小暗號。</p></article>
       <article class="card quote-card"><h3>✉ 留給自己的話</h3><p id="quoteText"></p><small id="quoteSource"></small><div class="note-actions"><button class="small-btn" id="saveQuote">♡ 收藏這句</button></div></article>
       <article class="card spicy-card"><h3>✎ 說句實在話</h3><p id="spicyText"></p></article>
     </div>
@@ -291,6 +359,7 @@ footer{text-align:center;padding:30px 10px 45px;color:#a58d9a;font-size:.82rem;l
       <strong>✧ 你找到藏起來的小花了！</strong>
       <p style="margin:6px 0">今天的隱藏小箋：不需要把每一天都過得很精彩。能好好走過，就是很了不起的事。</p>
       <p style="margin:0">再來看看季節限定的小小祝福吧。🌸</p>
+      <p style="margin:6px 0 0">聽說有隻愛睏的貓咪，躲在愛心章後面。輕輕點牠三下看看。🐾</p>
     </div>
   </section>
 
@@ -350,6 +419,27 @@ const quotes=[{"text":"你不必一次就走到很遠的地方，先走出今天
 const spicy=["你不是沒時間，你是把時間拿去猶豫、滑手機，再怪自己沒進度。先做十分鐘，別再跟藉口開會。","醒醒。你一直等狀態好才開始，結果狀態都被你等沒了。先動手，情緒晚點再處理。","你可以累，但別把「我很累」當成所有事情都不必開始的通行證。挑最小的一件完成。","一直想著怎麼做得完美，最後只會得到一份完美的零進度。先交出粗糙的第一版。","沒有人會替你把待辦清單清空。少想人生大道理，多做眼前的小事。","你不是輸給能力，常常是還沒看到成果就先撤退。這次先做完再評價。","別把拖延包裝成「我還在規劃」。不動手的計畫只是紙上裝飾。","你想改變，卻把每個開始都延到明天。明天不會自動變勇敢，現在做十分鐘。","別再問自己準備好了沒，你連開始都還沒給自己機會。","你不是缺一套新方法，你缺的是把手邊那套方法用完。","別把研究工具當成工作本身，工具不會替你交作業。","你可以繼續焦慮，但焦慮不會幫你多完成一行。動起來。","計畫寫得像得獎企劃，執行卻像失聯人口，這不叫策略。","先別替失敗寫預告片，連第一幕都還沒演。","你一直等靈感，靈感也在等你先打開檔案。","如果每次都說「等一下」，那你真正的行程就是拖延。","你不是需要更多時間管理影片，你需要把影片關掉。","別再把忙著想當成忙著做，兩者差得可遠了。","做不好可以修改，沒做就只能繼續腦補。選一個。","你可以抱怨路難走，但腳還是得自己抬。","別再把「我個性就是這樣」當免責聲明，習慣是可以練的。","今天不必逆天改命，先把那件拖了三天的事處理掉。","你把事情想得越複雜，越容易合理化不開始。拆小，現在做。","別再等完美的空檔，空檔不會自己長出來。","你不是沒有選擇，你只是一直選最舒服的那個，然後嫌結果不夠好。","手機不會自己把你的人生偷走，是你一直把方向盤交出去。","別用「我效率很差」替自己貼標籤，先試著專心十五分鐘。","你可以不喜歡這件事，但不代表它會自己完成。","每次都從頭規劃，難怪永遠沒有進度。這次接著做，不要重開人生。","別把短暫的挫折升級成整個人的判決，收拾一下繼續。","你不需要熱血沸騰，只需要停止跟開始討價還價。","不是每個念頭都值得開會，有些念頭直接放過就好。","你想要結果，卻一直跳過最無聊的累積；結果當然不會空降。","少一點自我批評，多一點能留下紀錄的行動。","別拿別人的進度嚇自己，你連自己的下一步都還沒做。","你可以今天狀態普通，但別讓普通變成完全放棄的理由。","不要把一次沒做好當成永久免修課，回來補上就行。","你不是要一次做完全部，只是連五分鐘都還沒開始。","再漂亮的待辦清單，沒有勾掉任何一項都只是裝飾品。","你不必證明自己很努力，讓成果和紀錄替你說話。","別把「我不知道從哪開始」說一整天，先挑最明顯的一步。","如果這件事真的重要，就別只在腦中替它安排位置。","你不可能靠嫌棄自己變得更有效率，換成一個具體動作。","別把休息和逃避混為一談：休息會回復你，逃避只會加重明天。","你已經花很多時間想這件事了，現在該付一點行動成本。","別急著追求大爆發，先戒掉每次都半途消失的習慣。","你可以重新開始，但別每次都把重新開始當成拖延的新包裝。","沒人要求你今天成為傳奇，只要求你別再對自己放空頭支票。","想法很多不是問題，問題是每個想法都停在草稿階段。","好了，抱怨額度用完了嗎？挑一件事，現在去做。","直說吧：你現在不是卡住，先做五分鐘，再決定要不要繼續。","直說吧：你現在不是卡住，把下一步寫清楚，現在就動手。","直說吧：你現在不是卡住，再想下去也不會自動多出進度。","直說吧：你現在不是卡住，關掉干擾，完成一個最小任務。","直說吧：你現在不是卡住，別等心情批准，先開始再說。","直說吧：你現在不是卡住，把藉口放旁邊，讓行動上場。","直說吧：你現在不是卡住，你需要的是一個完成紀錄，不是新計畫。","直說吧：你現在不是卡住，做得粗糙也比永遠停在想像裡強。","直說吧：你現在不是卡住，別再把明天當成免費的垃圾桶。","直說吧：你現在不是卡住，先交出一版，之後才有資格修改。","提醒一下：先做五分鐘，再決定要不要繼續。","提醒一下：把下一步寫清楚，現在就動手。","提醒一下：再想下去也不會自動多出進度。","提醒一下：關掉干擾，完成一個最小任務。","提醒一下：別等心情批准，先開始再說。","提醒一下：把藉口放旁邊，讓行動上場。","提醒一下：你需要的是一個完成紀錄，不是新計畫。","提醒一下：做得粗糙也比永遠停在想像裡強。","提醒一下：別再把明天當成免費的垃圾桶。","提醒一下：先交出一版，之後才有資格修改。","別再替拖延換漂亮名字了，先做五分鐘，再決定要不要繼續。","別再替拖延換漂亮名字了，把下一步寫清楚，現在就動手。","別再替拖延換漂亮名字了，再想下去也不會自動多出進度。","別再替拖延換漂亮名字了，關掉干擾，完成一個最小任務。","別再替拖延換漂亮名字了，別等心情批准，先開始再說。","別再替拖延換漂亮名字了，把藉口放旁邊，讓行動上場。","別再替拖延換漂亮名字了，你需要的是一個完成紀錄，不是新計畫。","別再替拖延換漂亮名字了，做得粗糙也比永遠停在想像裡強。","別再替拖延換漂亮名字了，別再把明天當成免費的垃圾桶。","別再替拖延換漂亮名字了，先交出一版，之後才有資格修改。","冷靜看現況：先做五分鐘，再決定要不要繼續。","冷靜看現況：把下一步寫清楚，現在就動手。","冷靜看現況：再想下去也不會自動多出進度。","冷靜看現況：關掉干擾，完成一個最小任務。","冷靜看現況：別等心情批准，先開始再說。","冷靜看現況：把藉口放旁邊，讓行動上場。","冷靜看現況：你需要的是一個完成紀錄，不是新計畫。","冷靜看現況：做得粗糙也比永遠停在想像裡強。","冷靜看現況：別再把明天當成免費的垃圾桶。","冷靜看現況：先交出一版，之後才有資格修改。","你可以不想做，先做五分鐘，再決定要不要繼續。","你可以不想做，把下一步寫清楚，現在就動手。","你可以不想做，再想下去也不會自動多出進度。","你可以不想做，關掉干擾，完成一個最小任務。","你可以不想做，別等心情批准，先開始再說。","你可以不想做，把藉口放旁邊，讓行動上場。","你可以不想做，你需要的是一個完成紀錄，不是新計畫。","你可以不想做，做得粗糙也比永遠停在想像裡強。","你可以不想做，別再把明天當成免費的垃圾桶。","你可以不想做，先交出一版，之後才有資格修改。","醒醒，先做五分鐘，再決定要不要繼續。","醒醒，把下一步寫清楚，現在就動手。","醒醒，再想下去也不會自動多出進度。","醒醒，關掉干擾，完成一個最小任務。","醒醒，別等心情批准，先開始再說。","醒醒，把藉口放旁邊，讓行動上場。","醒醒，你需要的是一個完成紀錄，不是新計畫。","醒醒，做得粗糙也比永遠停在想像裡強。","醒醒，別再把明天當成免費的垃圾桶。","醒醒，先交出一版，之後才有資格修改。","這句可能有點刺耳：先做五分鐘，再決定要不要繼續。","這句可能有點刺耳：把下一步寫清楚，現在就動手。","這句可能有點刺耳：再想下去也不會自動多出進度。","這句可能有點刺耳：關掉干擾，完成一個最小任務。","這句可能有點刺耳：別等心情批准，先開始再說。","這句可能有點刺耳：把藉口放旁邊，讓行動上場。","這句可能有點刺耳：你需要的是一個完成紀錄，不是新計畫。","這句可能有點刺耳：做得粗糙也比永遠停在想像裡強。","這句可能有點刺耳：別再把明天當成免費的垃圾桶。","這句可能有點刺耳：先交出一版，之後才有資格修改。","先停止腦內辯論，先做五分鐘，再決定要不要繼續。","先停止腦內辯論，把下一步寫清楚，現在就動手。","先停止腦內辯論，再想下去也不會自動多出進度。","先停止腦內辯論，關掉干擾，完成一個最小任務。","先停止腦內辯論，別等心情批准，先開始再說。","先停止腦內辯論，把藉口放旁邊，讓行動上場。","先停止腦內辯論，你需要的是一個完成紀錄，不是新計畫。","先停止腦內辯論，做得粗糙也比永遠停在想像裡強。","先停止腦內辯論，別再把明天當成免費的垃圾桶。","先停止腦內辯論，先交出一版，之後才有資格修改。","如果你真的在乎這件事，先做五分鐘，再決定要不要繼續。","如果你真的在乎這件事，把下一步寫清楚，現在就動手。","如果你真的在乎這件事，再想下去也不會自動多出進度。","如果你真的在乎這件事，關掉干擾，完成一個最小任務。","如果你真的在乎這件事，別等心情批准，先開始再說。","如果你真的在乎這件事，把藉口放旁邊，讓行動上場。","如果你真的在乎這件事，你需要的是一個完成紀錄，不是新計畫。","如果你真的在乎這件事，做得粗糙也比永遠停在想像裡強。","如果你真的在乎這件事，別再把明天當成免費的垃圾桶。","如果你真的在乎這件事，先交出一版，之後才有資格修改。","來，今天不講大道理：先做五分鐘，再決定要不要繼續。","來，今天不講大道理：把下一步寫清楚，現在就動手。","來，今天不講大道理：再想下去也不會自動多出進度。","來，今天不講大道理：關掉干擾，完成一個最小任務。","來，今天不講大道理：別等心情批准，先開始再說。","來，今天不講大道理：把藉口放旁邊，讓行動上場。","來，今天不講大道理：你需要的是一個完成紀錄，不是新計畫。","來，今天不講大道理：做得粗糙也比永遠停在想像裡強。","來，今天不講大道理：別再把明天當成免費的垃圾桶。","來，今天不講大道理：先交出一版，之後才有資格修改。"];
 const fortuneReadings={"大吉":["好機會正在靠近，主動一點會比等待更有收穫。","今天的氣勢很不錯，適合把重要的事往前推進。","努力有機會得到回應，記得把握眼前的好時機。","適合嘗試新方法的一天，勇敢行動會看見突破。","整體順風，別因為太順利就忘了仔細確認。"],"吉":["運勢穩定中帶著好消息，踏實做事就有收穫。","今天適合按部就班，成果會比想像中更可靠。","有人事物可能帶來小驚喜，保持開放心情。","把握手上的資源，平常心反而容易發揮。","不必急著衝刺，穩定的選擇會帶你前進。"],"中吉":["今天有好有普通，抓住能掌握的部分就好。","事情大致平穩，細節多留意會更順利。","好運不算張揚，但藏在耐心與準備裡。","先完成重要的一件事，其他事情會逐漸明朗。","遇到小阻礙不用慌，調整步伐就能繼續。"],"小吉":["平凡的一天也有小小的好事，記得留意。","不用追求大突破，完成一件小事就很值得。","今天適合照顧好節奏，慢慢來也會有進展。","小小的善意可能帶來好心情，先從自己開始。","運氣藏在日常裡，別因為不轟烈就忽略它。"],"末吉":["進展可能慢一些，耐心比急著求結果更有用。","今天先把基礎顧好，後續會更容易走穩。","不必勉強一次到位，逐步修正就是好方法。","先處理眼前的問題，別讓擔心搶走太多心力。","暫時沒有大驚喜也沒關係，穩住就是進展。"],"凶":["今天適合保守行事，重要決定多確認一次。","遇到不順先別硬碰硬，停一下再找方法。","容易分心或出錯的一天，放慢速度能減少麻煩。","今天先避開衝動決定，把體力留給真正重要的事。","狀況不如預期也別慌，先穩住能掌握的部分。"]};
 
+const luckyNotes=['不是答案，只是今天的小小暗號。','看到 {n} 的時候，就當作宇宙輕輕眨了一下眼。','它沒有特別的意義，只是今天想陪你走一段。','把 {n} 悄悄記在心裡，遇到時笑一下就好。','不用拿來下注，拿來當作今天的小小提醒就夠了。','如果今天遇到它，就當作一個小小的好兆頭。','數字不會決定你的一天，但可以讓這一天有個小記號。','把它寫在手心，緊張的時候看一眼。','今天的幸運不是搶來的，是你自己慢慢留意到的。','當它出現在時鐘或收據上，替自己說聲「嗨」。','它只是個小路標，路還是你自己走。','想不到要選什麼的時候，就讓 {n} 替你做個小決定。','這是只有你和這本手帳知道的小祕密。','看到它，就深呼吸一次，然後繼續。','拿它當今天的集點目標：看到幾次就記幾次。','不必迷信，只要覺得今天多了一點好玩就好。','今天的小暗號，留給願意慢慢留意生活的你。','它像口袋裡一顆小糖，需要的時候再拿出來。','偶然遇到它時，就替自己加一分好心情。','把 {n} 當成今天的節拍，慢慢來也能走得穩。','它是個溫柔的提醒：你不是一個人在過今天。','運氣很害羞，常常躲在像 {n} 這樣的小地方。','它不保證什麼，但可以讓你多留意一次身邊的小事。','今天遇到它的時候，順便喝口水、放鬆一下肩膀。','當作玩笑也好，當作祝福也好，都是今天的小驚喜。','用它替今天蓋一個小小的印章。','沒有道理的幸運，反而最讓人開心。','把它留在心裡，像一個只對自己說的小口令。','看到 {n} 的那一刻，記得對自己說：今天也辛苦了。','小小的數字，陪你把今天好好過完。'];
+
+// 以日期為種子的亂數產生器（mulberry32），讓同一天的結果可重現。
+function rngFrom(seed){let h=2166136261;for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)}let a=h>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+/* 整體運勢 → 愛情／財運／課業工作 的條件機率模型
+   1. 各項期望值 = 3 + 相關係數 × (整體分數 − 3)，整體越高，各項越可能偏高，但會向中間靠攏。
+   2. 每一分的機率依常態分布 (σ=0.95) 計算，高分整體仍保有小機率出現低分項目，反之亦然。
+   3. 三項運勢隨機排序依序抽取，前一項若高於期望，後一項期望值往回拉 30%（有得有失）。 */
+function relatedScores(overall,seed){
+ const rnd=rngFrom(seed+'-links'),rho=[.5,.55,.65],sigma=.95,out=[0,0,0],order=[0,1,2];
+ for(let i=2;i>0;i--){const j=Math.floor(rnd()*(i+1));[order[i],order[j]]=[order[j],order[i]]}
+ let drift=0;
+ for(const idx of order){
+  const expected=3+rho[idx]*(overall-3),mean=Math.max(1,Math.min(5,expected-drift*.3));
+  const w=[1,2,3,4,5].map(k=>Math.exp(-((k-mean)**2)/(2*sigma*sigma)));
+  let t=rnd()*w.reduce((a,b)=>a+b,0),v=5;
+  for(let k=0;k<5;k++){t-=w[k];if(t<0){v=k+1;break}}
+  out[idx]=v;drift+=v-expected;
+ }
+ return out;
+}
 function seededIndex(seed,max){let h=2166136261;for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0)%max}
 function drawScore(id,labelId,score,symbol){const box=$(id);box.innerHTML='';for(let i=1;i<=5;i++){const s=document.createElement('span');s.textContent=symbol;s.className=i<=score?'filled':'';s.style.animationDelay=(i*.07)+'s';box.appendChild(s)}$(labelId).textContent=`${score} 分｜${['先穩住步調','平平穩穩','有些小驚喜','值得期待','好好把握'][score-1]}`}
 function loadSaved(){let saved=[];try{saved=JSON.parse(localStorage.getItem('fortuneNotes')||'[]')}catch(e){}const box=$('savedQuotes');box.innerHTML='';if(!saved.length){box.innerHTML='<div class="empty">你收藏的句子會安靜地待在這裡。</div>';return}saved.slice().reverse().forEach((q,idx)=>{const el=document.createElement('article');el.className='saved-note';const p=document.createElement('p');p.textContent='「'+q.text+'」';const small=document.createElement('small');small.textContent=(q.date||'')+(q.source?' · '+q.source:'');const btn=document.createElement('button');btn.className='small-btn';btn.textContent='移除收藏';btn.onclick=()=>{let list=JSON.parse(localStorage.getItem('fortuneNotes')||'[]');list.splice(list.length-1-idx,1);localStorage.setItem('fortuneNotes',JSON.stringify(list));loadSaved()};el.append(p,small,document.createElement('br'),btn);box.appendChild(el)})}
@@ -370,7 +460,7 @@ function createTodayData(){
  const overall=minScore+Math.floor(Math.random()*(maxScore-minScore+1));
  const ci=seededIndex(seed+'c',colors.length),qi=seededIndex(seed+'q',quotes.length),si=seededIndex(seed+'s',spicy.length);
  const level=fortunes[fi][0];const reading=fortuneReadings[level][seededIndex(seed+'reading',fortuneReadings[level].length)];
- return {date:key,fortune:[level,reading],color:colors[ci],quote:quotes[qi],spicy:spicy[si],number:seededIndex(seed+'n',10),scores:[overall,1+seededIndex(seed+'score1',5),1+seededIndex(seed+'score2',5),1+seededIndex(seed+'score3',5)]};
+ return {date:key,fortune:[level,reading],color:colors[ci],quote:quotes[qi],spicy:spicy[si],number:seededIndex(seed+'n',10),scores:[overall,...relatedScores(overall,seed)]};
 }
 
 
@@ -421,6 +511,7 @@ function showData(data){
  $('colorSwatch').style.background=color[1]||'#f5d6df';
  applyMutedLuckyColor(color[1]||color[0]||'櫻花粉');
  $('luckyNumber').textContent=Number.isInteger(data.number)?String(data.number):'7';
+ $('luckyNote').textContent=luckyNotes[seededIndex(String(data.date||dateKey())+'-'+data.number+'-note',luckyNotes.length)].replace(/\{n\}/g,Number.isInteger(data.number)?data.number:7);
  currentQuote=quote;
  $('quoteText').textContent=quote.text||'今天也值得被溫柔對待。';
  $('quoteSource').textContent=quote.source||'';
@@ -538,19 +629,27 @@ document.querySelectorAll('.card,.saved-note').forEach((el,i)=>{
    try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&/^fortune-\d{4}-\d{2}-\d{2}$/.test(k)){const d=read(k,null);if(d&&d.date)list.push(d)}}}catch(e){}
    return list.sort((a,b)=>a.date.localeCompare(b.date));
  };
- const seasonal=()=>{
-   const m=new Date().getMonth()+1;
-   if([3,4,5].includes(m))return {icon:'🌸',title:'春日限定小箋',text:'不用急著盛開，先把根扎穩。你正在走向自己的春天。'};
-   if([6,7,8].includes(m))return {icon:'🍧',title:'夏日限定小箋',text:'留一點清涼給自己。忙碌的日子裡，也要記得喝水、休息。'};
-   if([9,10,11].includes(m))return {icon:'🍁',title:'秋日限定小箋',text:'有些事慢慢整理就好。把不再需要的焦慮，留在風裡。'};
-   return {icon:'❄️',title:'冬日限定小箋',text:'天冷了，也請好好照顧自己。你不必在每個季節都全力奔跑。'};
- };
- const tasksByFortune={
-   '財運':['記錄今天的一筆支出','整理一下錢包或付款紀錄','今天購物前先停十秒想一想'],
-   '課業・工作':['專心完成一項待辦','整理一份筆記或檔案','先做最容易開始的十分鐘'],
-   '自我照顧':['喝一杯水，伸展一下肩頸','留十分鐘不看手機','今天早一點讓自己休息']
- };
- const defaultTasks=['完成一件最重要的小事','留十分鐘給自己喘口氣','整理一個桌面或檔案'];
+ const seasonPools={
+  spring:{icon:'🌸',title:'春日限定小箋',notes:[['🌸','不用急著盛開，先把根扎穩。你正在走向自己的春天。'],['🌱','新芽冒出來的時候，沒有人要它立刻變成大樹。你也是。'],['🌧️','春天的雨有點煩人，但也讓很多東西悄悄長大。難熬的日子也一樣。'],['🦋','改變不必轟轟烈烈，有時只是翅膀輕輕動了一下。'],['🍃','風有點暖了。把窗打開，讓心裡悶著的事也透透氣。'],['🌷','不是每朵花都在同一天開，你的節奏不需要和別人對齊。'],['🐝','忙碌不一定是壞事，記得在花間停一下，嘗點甜的。'],['🌿','把不再適合的舊習慣，當作換季的外套，輕輕收起來就好。']]},
+  summer:{icon:'🍧',title:'夏日限定小箋',notes:[['🍧','留一點清涼給自己。忙碌的日子裡，也要記得喝水、休息。'],['🌊','情緒像海浪，會來也會退。先站穩，別急著回應每一道浪。'],['🍉','日子再熱，也值得留一片最甜的給自己。'],['🌻','朝著讓你覺得有光的方向，慢慢轉過去就好。'],['🎐','風鈴不用用力，只要有風經過就會響。有些好事也是這樣來的。'],['⛱️','放假不需要理由。今天允許自己做一件沒有效率的小事。'],['🌩️','午後的雷雨很快就過，別把一時的壞天氣當成整個夏天。'],['🍦','趁它融化之前，好好享受眼前這一口。有些快樂就是要現在吃。']]},
+  autumn:{icon:'🍁',title:'秋日限定小箋',notes:[['🍁','有些事慢慢整理就好。把不再需要的焦慮，留在風裡。'],['🍂','落葉不是失去，是為了讓樹把力氣留給更重要的地方。'],['🌕','月亮不會因為你忙就缺席。今晚抬頭看一眼吧。'],['🍵','泡一杯熱的，慢慢喝完。今天這個小儀式就算數。'],['🌾','收成需要時間。你現在做的每一件小事，都在慢慢結穗。'],['🧣','天涼了，記得替自己添一件衣服，也替心情添一點溫度。'],['🍠','烤地瓜的香味提醒你：平凡的日常也有很溫暖的瞬間。'],['🍄','安靜的地方也會長出好東西。不必每天都被看見。']]},
+  winter:{icon:'❄️',title:'冬日限定小箋',notes:[['❄️','天冷了，也請好好照顧自己。你不必在每個季節都全力奔跑。'],['☃️','就算今天只是原地待著，也是一種把自己好好保存的方式。'],['🧤','把手捂熱再出門。照顧好自己的小細節，是最實際的溫柔。'],['🍲','一碗熱湯可以解決很多事。至少今天的心情可以。'],['🌙','長長的夜晚，適合早點睡。很多煩惱，睡醒後會變小。'],['🕯️','不必燒得很旺，穩穩亮著就是一盞很好的燈。'],['🎁','這一年你做過的小努力，都值得被當成禮物收下。'],['🌨️','雪會慢慢積起來，你的進步也是。']]}
+};
+const specialDays={'01-01':['🎍','元旦限定小箋','新的一年不需要立刻變成新的人，先帶著現在的自己出發就好。'],'02-14':['💌','情人節限定小箋','先好好愛自己，其他的喜歡都是額外的甜。'],'04-04':['🧸','兒童節限定小箋','偶爾幼稚一下沒關係。今天可以做一件只因為「好玩」的事。'],'10-10':['🎆','國慶日限定小箋','放假或不放假都好，記得替今天留一點小小的慶祝。'],'10-31':['🎃','萬聖節限定小箋','不用扮成誰。今天只要做一點點不一樣的自己就很有趣。'],'12-24':['🎄','聖誕限定小箋','把一點溫暖送給誰，也別忘了留一份給自己。'],'12-25':['🎄','聖誕限定小箋','把一點溫暖送給誰，也別忘了留一份給自己。'],'12-31':['🎇','跨年限定小箋','這一年辛苦了。把做到的事記下來，沒做到的先放過自己。']};
+const seasonal=()=>{
+  const d=new Date(),m=d.getMonth()+1,md=String(m).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  if(specialDays[md]){const [icon,title,text]=specialDays[md];return {icon,title,text}}
+  const season=[3,4,5].includes(m)?'spring':[6,7,8].includes(m)?'summer':[9,10,11].includes(m)?'autumn':'winter';
+  const pool=seasonPools[season],[icon,text]=pool.notes[seededIndex(todayKey()+'-season',pool.notes.length)];
+  return {icon,title:pool.title,text};
+};
+// 每天依日期從三組任務池各抽一項（同一天結果固定，打勾狀態不會跑掉）。
+const taskPools=[
+  ['專心完成一項待辦，做完就勾掉','整理一份筆記或檔案','先做最容易開始的十分鐘','把明天最重要的一件事寫下來','回覆一則拖了很久的訊息','記錄今天的一筆支出','整理一下錢包或付款紀錄','今天購物前先停十秒想一想','取消一個不再需要的訂閱或提醒','把一個大任務拆成三個小步驟','查看一次本週的行程與截止日','刪掉十張不需要的截圖或照片'],
+  ['喝一杯水，伸展一下肩頸','留十分鐘不看手機','今天早一點讓自己休息','吃一份讓自己覺得被照顧的餐點','出門走五分鐘，看一眼天空','做三次慢慢的深呼吸','替自己泡一杯喜歡的飲品','聽一首會讓心情變軟的歌','對鏡子裡的自己說一句好話','睡前把手機放遠一點','站起來轉轉脖子和手腕','寫下一件今天值得感謝的小事'],
+  ['整理一個桌面或檔案','把包包裡的垃圾清掉','傳一則短訊息問候一位朋友','對今天遇到的一個人說謝謝','換掉一件該洗的床單或毛巾','把用完的杯子或碗盤洗好','替一個小角落騰出一點空位','回想一次今天讓你微笑的瞬間','替植物澆水，或看看窗外的綠','整理手機桌面的一頁','把一樣東西放回原本的位置','稱讚身邊的某個人一句']
+];
+const todayTasks=()=>taskPools.map((pool,i)=>pool[seededIndex(todayKey()+'-task'+i,pool.length)]);
  const getTaskState=()=>read('fortuneTasks-'+todayKey(),{});
  const setTaskState=s=>write('fortuneTasks-'+todayKey(),s);
  const moodState=()=>read('fortuneMood-'+todayKey(),null);
@@ -559,7 +658,7 @@ document.querySelectorAll('.card,.saved-note').forEach((el,i)=>{
    const box=$f('taskList');if(!box)return;
    const state=getTaskState();
    box.innerHTML='';
-   defaultTasks.forEach((task,i)=>{
+   todayTasks().forEach((task,i)=>{
      const label=document.createElement('label');label.className='task-item'+(state[i]?' done':'');
      const input=document.createElement('input');input.type='checkbox';input.checked=!!state[i];input.setAttribute('aria-label',task);
      input.addEventListener('change',()=>{const s=getTaskState();s[i]=input.checked;setTaskState(s);label.classList.toggle('done',input.checked);updateStats();});
@@ -705,5 +804,109 @@ document.querySelectorAll('.card,.saved-note').forEach((el,i)=>{
 })();
 </script>
 
+
+<script>
+/* 隱藏彩蛋：點愛心章三下，想睡覺的貓咪就會出現；再點三下請牠們回去睡。 */
+(()=>{
+ const stamp=document.getElementById('catStamp');
+ if(!stamp)return;
+ const A='fill="#fffaf0" stroke="#705268" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
+ const zzz='<svg class="zzz" viewBox="0 0 50 50" aria-hidden="true"><path class="z1" d="M4 40h9l-9 9h9"/><path class="z2" d="M18 24h11l-11 11h11"/><path class="z3" d="M34 4h13L34 17h13"/></svg>';
+ const stand=`<svg class="cat-stand" viewBox="0 0 120 150" ${A}>
+  <path class="f1" d="M36 134C30 142 40 147 52 143C54 139 52 136 52 134"/><path class="f2" d="M84 134C90 142 80 147 68 143C66 139 68 136 68 134"/>
+  <path d="M36 82C31 100 30 118 35 133C46 139 74 139 85 133C90 118 89 100 84 82"/>
+  <path d="M26 58C23 44 25 34 30 24L44 34C52 31 68 31 76 34L90 24C95 34 97 46 94 58C98 69 94 79 84 83C70 87 50 87 36 83C26 79 22 69 26 58Z"/>
+  <g fill="none"><path d="M40 62L52 63M68 63L80 62" stroke-width="3.4"/><path d="M57 70q3 3 6 0M31 68h7M32 73l6-2M82 68h7M82 71l6 2"/><path d="M48 107C42 104 38 111 41 117C45 122 53 119 53 112"/></g></svg>`;
+ const curl=`<svg viewBox="0 0 160 100" ${A}>
+  <path d="M20 62C18 50 22 38 30 30L40 40C46 38 52 38 58 40L66 32C70 40 72 48 70 54C84 44 116 44 132 62C146 78 134 94 108 94L52 94C30 94 20 82 20 62Z"/>
+  <g fill="none"><path d="M44 88C70 70 108 72 126 84"/><path d="M31 57q4 3 8 0M51 57q4 3 8 0M43 63q2 2 4 0"/></g></svg>`;
+ const loaf=`<svg class="cat-loaf" viewBox="0 0 130 70" ${A}>
+  <path d="M12 52C10 40 16 28 24 22L26 8L40 18C48 16 60 16 68 18L80 8L84 22C100 24 118 34 118 50C118 60 110 64 100 64L26 64C16 64 12 60 12 52Z"/>
+  <g fill="none"><path class="tail" d="M116 52C128 50 132 40 126 34"/><path d="M28 38q5 3 10 0M58 38q5 3 10 0M44 45q2 2 4 0q2 2 4 0"/><path d="M30 64C30 57 40 57 40 64M50 64C50 57 60 57 60 64"/></g></svg>`;
+ const blanket=`<svg class="cat-blanket" viewBox="0 0 150 92" ${A}>
+  <g class="bhead"><path d="M32 56C28 44 28 28 34 16L48 26C58 22 82 22 92 26L106 16C112 28 112 44 108 56C100 68 40 68 32 56Z"/>
+  <g fill="none"><path d="M44 44h12M84 44h12" stroke-width="3.4"/><path d="M66 51q3 3 6 0"/></g></g>
+  <path d="M14 88C24 72 44 64 70 66C98 64 126 72 138 88Z"/>
+  <g class="tinycat"><path d="M30 82L31 70L36 73C39 72 42 72 45 73L50 70L51 82C46 87 35 87 30 82Z"/><path d="M36 78h.1M45 78h.1" fill="none" stroke-width="3"/></g></svg>`;
+ let built=false,walker=null,taps=0,tapTimer=0;
+ const reduce=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+ function build(){
+  if(built)return;built=true;
+  const layer=document.createElement('div');layer.className='egg-layer';layer.setAttribute('aria-hidden','true');
+  layer.innerHTML=`<div class="egg-walker">${stand}<div class="egg-curl egg-pet">${curl}${zzz}</div></div>`;
+  document.body.appendChild(layer);
+  walker=layer.firstElementChild;
+  walker.addEventListener('animationend',e=>{if(e.animationName==='eggWalkIn'){walker.classList.remove('walking');walker.classList.add('dozing')}});
+  const book=document.getElementById('book');
+  if(book&&book.parentNode){const d=document.createElement('div');d.className='egg-loaf';d.setAttribute('aria-hidden','true');d.innerHTML=`<div class="egg-pet">${loaf}${zzz}</div>`;book.parentNode.insertBefore(d,book)}
+  const ft=document.querySelector('footer');
+  if(ft){const d=document.createElement('div');d.className='egg-blanket';d.setAttribute('aria-hidden','true');d.innerHTML=`<div class="egg-pet">${blanket}${zzz}</div>`;ft.insertAdjacentElement('afterbegin',d)}
+ }
+ function start(){
+  build();document.body.classList.add('cat-mode');
+  walker.className='egg-walker';void walker.offsetWidth;
+  walker.classList.add(reduce()?'dozing':'walking');
+ }
+ const stop=()=>document.body.classList.remove('cat-mode');
+ function tap(){
+  clearTimeout(tapTimer);taps++;
+  stamp.classList.remove('nudge');void stamp.offsetWidth;stamp.classList.add('nudge');
+  if(taps>=3){taps=0;document.body.classList.contains('cat-mode')?stop():start()}
+  else tapTimer=setTimeout(()=>{taps=0},1200);
+ }
+ stamp.addEventListener('click',tap);
+ stamp.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap()}});
+ // 摸摸貓咪：冒出小愛心，貓咪呼嚕抖一下。
+ document.addEventListener('click',e=>{
+  const pet=e.target.closest&&e.target.closest('.egg-pet');if(!pet)return;
+  const h=document.createElement('span');h.className='egg-heart';h.textContent='♡';
+  h.style.left=e.clientX+'px';h.style.top=e.clientY+'px';document.body.appendChild(h);setTimeout(()=>h.remove(),1150);
+  pet.classList.remove('purr');void pet.offsetWidth;pet.classList.add('purr');
+ });
+})();
+</script>
+
+<script>
+/* 常駐打招呼貓咪：依時段（早 05–11、中 11–17、晚 17–05）各有 5 句台詞，點牠會換一句。 */
+(()=>{
+ const hero=document.querySelector('.hero');if(!hero)return;
+ const lines={
+  morning:['早安喵～今天的頁面也替你翻好了。','早安！先喝口水，再開始今天吧。','喵～你來啦，今天也慢慢來就好。','早安，陽光很好，要不要先抽支籤？','起床了嗎？我已經在這裡等你一會兒了。'],
+  noon:['午安喵～記得吃點東西，別讓肚子唱空城。','午安！站起來伸個懶腰吧。','喵～忙了一陣子，辛苦你了。','要不要先休息十分鐘？我陪你。','下午也慢慢來，先喝口水喔。'],
+  evening:['晚安喵～今天辛苦了，你已經做得很好。','晚上好，把手機放遠一點，早點休息吧。','喵～今天有什麼小事值得被記下來嗎？','夜深了，煩惱留給明天，先好好睡覺。','呼啊～我也有點想睡了，你呢？']
+ };
+ const eyes={
+  morning:'<circle cx="42" cy="54" r="2.6" fill="#705268" stroke="none"/><circle cx="68" cy="54" r="2.6" fill="#705268" stroke="none"/>',
+  noon:'<path d="M38 56q4-5 8 0M64 56q4-5 8 0" fill="none"/>',
+  evening:'<path d="M38 54h8M64 54h8" fill="none" stroke-width="3.4"/>'
+ };
+ const period=()=>{const h=new Date().getHours();return h>=5&&h<11?'morning':h>=11&&h<17?'noon':'evening'};
+ const svg=`<svg viewBox="0 0 110 120" fill="#fffaf0" stroke="#705268" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <path class="gtail" fill="none" d="M34 108C18 108 14 92 24 88"/>
+  <path d="M34 76C30 92 29 104 34 112C44 117 66 117 76 112C81 104 80 92 76 76"/>
+  <path fill="none" d="M38 113C36 118 44 120 50 116M72 113C74 118 66 120 60 116"/>
+  <path d="M38 100C34 100 33 106 38 108C43 109 46 105 44 101"/>
+  <path class="wave" d="M76 90C86 88 94 80 93 68C92 62 85 62 84 68C83 76 79 80 74 82Z"/>
+  <path d="M24 52C21 40 23 28 28 18L42 28C50 25 60 25 68 28L82 18C87 28 89 40 86 52C90 62 86 72 76 76C64 80 46 80 34 76C24 72 20 62 24 52Z"/>
+  <g class="geyes"></g>
+  <path fill="none" d="M52 62q3 3 6 0M30 60h7M31 65l6-2M73 60h7M73 63l6 2"/></svg>`;
+ const wrap=document.createElement('div');wrap.className='greeter';
+ wrap.innerHTML=`<p class="greet-bubble" aria-live="polite"></p><button type="button" class="greet-cat egg-pet" aria-label="跟打招呼的貓咪互動">${svg}</button>`;
+ hero.parentNode.insertBefore(wrap,hero);
+ const bubble=wrap.querySelector('.greet-bubble'),cat=wrap.querySelector('.greet-cat'),eyeBox=wrap.querySelector('.geyes');
+ const last={};let shown='';
+ function say(){
+  const p=period(),list=lines[p];let i;
+  do{i=Math.floor(Math.random()*list.length)}while(i===last[p]&&list.length>1);
+  last[p]=i;shown=p;
+  bubble.textContent=list[i];eyeBox.innerHTML=eyes[p];
+  bubble.classList.remove('pop');cat.classList.remove('talking');void cat.offsetWidth;
+  bubble.classList.add('pop');cat.classList.add('talking');
+ }
+ cat.addEventListener('click',say);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&period()!==shown)say()});
+ say();
+})();
+</script>
 </body>
 </html>
